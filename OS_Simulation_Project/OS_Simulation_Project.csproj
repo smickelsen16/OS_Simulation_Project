@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CPUQueue.cs" />
+    <Compile Include="IOQueue.cs" />
     <Compile Include="PCB.cs" />
     <Compile Include="ProcessorAlgorithms.cs" />
     <Compile Include="Simulation.cs" />

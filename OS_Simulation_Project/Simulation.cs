@@ -13,7 +13,7 @@ namespace OS_Simulation_Project
     /// </summary>
     class Simulation
     {
-        
+
         //public ProcessTable table;                       // list of all processes & associated info & ID's
 
         public void MultiProcRoundRobin(Queue<int> rq, bool[] procArray, ProcessorAlgorithms rr, Random rand, Dictionary<int, PCB> procTab)
@@ -55,24 +55,23 @@ namespace OS_Simulation_Project
             processTable.Add(5, new PCB(7, true, 15));
             processTable.Add(6, new PCB(5, true, 17));
 
-            
             for (int i = 0; i <= processTable.Count(); i++)
             {
                 if (processTable.ElementAt(i).Value.arrivalTime == systemTime.ElapsedMilliseconds)
                     readyQ.Enqueue(processTable.ElementAt(i).Key);
             }
 
-
-
             ProcessorAlgorithms uniSim = new ProcessorAlgorithms();
 
-            uniSim.First_Come_First_Served(processTable);                         // FCFS works correctly!!
-            //throughput = readyQ.Count() / uniSim.systemTime;              // calculate throughput (# procs/system time)
-            //Console.WriteLine("Throughput for FCFS: " + throughput.ToString() + " processes/system time\n");
-
-            uniSim.Round_Robin(4,processTable);                                   // issues when a process arrives after quantum is over....
-            //throughput = readyQ.Count() / uniSim.systemTime;            // calculate throughput (# procs/system time)
-            //Console.WriteLine("Throughput for Round Robin: " + throughput.ToString() + " processes/system time\n");
+            // one queue... just repeat with different order/number of RR queues??
+            for (int i = 0; i < processTable.Count(); i++)
+            {
+                Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+                uniSim.First_Come_First_Served(currProc, systemTime);
+            }
 
             systemTime.Stop();
         }
