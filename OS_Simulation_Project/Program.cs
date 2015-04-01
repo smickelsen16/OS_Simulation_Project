@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace OS_Simulation_Project
 {
-
-    
-
     /// <summary>
     /// holds a dictionary mapping of PID's and PCB's
     /// the simulation will pull processes from here to run 
@@ -72,22 +69,22 @@ namespace OS_Simulation_Project
             double throughput;                          // amount of processes completed in a given time
             double CPU_utilization;                     // % time CPU is executing
 
-            Dictionary<int, PCB> readyQ = new Dictionary<int, PCB>();
-            readyQ.Add(0, new PCB(6, true, 0));
-            readyQ.Add(1, new PCB(8, true, 4));
-            readyQ.Add(2, new PCB(4, true, 7));
-            readyQ.Add(3, new PCB(4, true, 8));
-            readyQ.Add(4, new PCB(2, true, 10));
-            readyQ.Add(5, new PCB(7, true, 15));
-            readyQ.Add(6, new PCB(5, true, 17));
+            Dictionary<int, PCB> processTable = new Dictionary<int, PCB>();
+            processTable.Add(0, new PCB(6, true, 0));
+            processTable.Add(1, new PCB(8, true, 4));
+            processTable.Add(2, new PCB(4, true, 7));
+            processTable.Add(3, new PCB(4, true, 8));
+            processTable.Add(4, new PCB(2, true, 10));
+            processTable.Add(5, new PCB(7, true, 15));
+            processTable.Add(6, new PCB(5, true, 17));
 
             UniprocessorAlgorithms uniSim = new UniprocessorAlgorithms();
 
-            uniSim.First_Come_First_Served(readyQ);                     // FCFS works correctly!!
-            //throughput = readyQ.Count() / uniSim.systemTime;            // calculate throughput (# procs/system time)
+            uniSim.First_Come_First_Served(processTable);                         // FCFS works correctly!!
+            //throughput = readyQ.Count() / uniSim.systemTime;              // calculate throughput (# procs/system time)
             //Console.WriteLine("Throughput for FCFS: " + throughput.ToString() + " processes/system time\n");
 
-            uniSim.Round_Robin(4,readyQ);                                   // issues when a process arrives after quantum is over....
+            uniSim.Round_Robin(4,processTable);                                   // issues when a process arrives after quantum is over....
             //throughput = readyQ.Count() / uniSim.systemTime;            // calculate throughput (# procs/system time)
             //Console.WriteLine("Throughput for Round Robin: " + throughput.ToString() + " processes/system time\n");
         }
