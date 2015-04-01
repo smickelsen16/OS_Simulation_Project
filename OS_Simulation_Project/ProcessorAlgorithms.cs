@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace OS_Simulation_Project
 {
-    class UniprocessorAlgorithms
+    class ProcessorAlgorithms
     {
-        public double systemTime = 0;          // keeps track of current system time
-
         ///// <summary>
         ///// Preemptive (?)
         ///// Runs each process for the specified time quantum and then switches to the next arrived process
@@ -83,7 +81,7 @@ namespace OS_Simulation_Project
         //}
 
         /// <summary>
-        /// Preemptive (?)
+        /// Preemptive
         /// Runs each process for the specified time quantum and then switches to the next arrived process
         /// </summary>
         /// <param name="quantum"> time allocated to each process per RR cycle </param>
