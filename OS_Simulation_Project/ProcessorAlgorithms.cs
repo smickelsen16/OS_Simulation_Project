@@ -87,20 +87,23 @@ namespace OS_Simulation_Project
         /// </summary>
         /// <param name="quantum"> time allocated to each process per RR cycle </param>
         /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void Round_Robin(int quantum, Tuple<int, PCB> currentProc, Stopwatch time)
+        public void Round_Robin(int quantum, Tuple<int, PCB> currentProc, double time)
         {
             // calculate the response time for the current process
-            currentProc.Item2.response = time.ElapsedMilliseconds - currentProc.Item2.arrivalTime;
+            if (currentProc.Item2.response == -1)
+                currentProc.Item2.response = time - currentProc.Item2.arrivalTime;
+
+            currentProc.Item2.wait += currentProc.Item2.response;
 
             // run that process for the quantum 
             if (currentProc.Item2.remainingServiceTime >= quantum)                    // check to make sure quantum isn't bigger than remaining time
             {
                 currentProc.Item2.remainingServiceTime -= quantum;                    // subtract quantum from remainingServiceTime
-                //time.ElapsedMilliseconds += quantum;                                //  how to update system time with a stopwatch??
+                time += quantum;                                                      //  how to update system time with a stopwatch??
             }
             else
             {
-                //time.ElapsedMilliseconds += currentProc.remainingServiceTime;       // udate system time-- how with a stopwatch??
+                time += currentProc.Item2.remainingServiceTime;                       // udate system time-- how with a stopwatch??
                 currentProc.Item2.remainingServiceTime = 0;                           // zero out remainingServiceTime
             }
         }
@@ -110,17 +113,22 @@ namespace OS_Simulation_Project
         /// Runs each process to completion based on the time they arrive
         /// </summary>
         /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void First_Come_First_Served(Tuple<int, PCB> currentProc, Stopwatch time)
+        public void First_Come_First_Served(Dictionary<int, PCB> readyQ, double time)
         {
-            // set the processes response time to the systemTime - arrivalTime
-            currentProc.Item2.response = time.ElapsedMilliseconds - currentProc.Item2.arrivalTime;
+            PCB currentProc;
+            for (int i = 0; i < readyQ.Count(); i++)
+            {
+                currentProc = readyQ.ElementAt(i).Value;
+                // set the processes response time to the systemTime - arrivalTime
+                //currentProc.response = time - currentProc.arrivalTime;
 
-            // run the process to completion
-            //systemTime += currentProc.expectedServiceTime;                                              // update system time to account for running the program 
-            currentProc.Item2.remainingServiceTime = 0;                                                   // process has completed
-            currentProc.Item2.execution = time.ElapsedMilliseconds - currentProc.Item2.response;          // update currentProc execution time to systemTime - currentProc.response
-            currentProc.Item2.turnaround = time.ElapsedMilliseconds - currentProc.Item2.arrivalTime;      // set turnaround time to systemTime - arrivalTime
-            currentProc.Item2.wait = currentProc.Item2.response;                                          // how to calculate wait time for  each process
+                // run the process to completion
+                time += currentProc.remainingServiceTime;                                                     // update system time to account for running the program 
+                currentProc.remainingServiceTime = 0;                                                         // process has completed
+                currentProc.execution = time - currentProc.response;                                          // update currentProc execution time to systemTime - currentProc.response
+                currentProc.turnaround = time - currentProc.arrivalTime;                                      // set turnaround time to systemTime - arrivalTime
+                currentProc.wait += currentProc.response;
+            }
         }
 
         /// <summary>
@@ -131,7 +139,7 @@ namespace OS_Simulation_Project
         /// <param name="ReadyQueue"> list of processes to be run </param>
         public void Shortest_Process_Next(Dictionary<int, PCB> ReadyQueue)
         {
-           // same as FCFS, but runs shortest procs first
+            // same as FCFS, but runs shortest procs first
         }
 
         /// <summary>
@@ -140,8 +148,31 @@ namespace OS_Simulation_Project
         /// Will interrupt the current process if another process has a shorter remaining time 
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
-        public void Shortest_Remaining_Time(Tuple<int, PCB> currentProc, Stopwatch time)
+        public void Shortest_Remaining_Time(Dictionary<int, PCB> readyQ, double time)
         {
+            PCB currentProc = null;
+            for (int i = 0; i < readyQ.Count(); i++)
+            {
+                if (currentProc == null)
+                    currentProc = readyQ.ElementAt(i).Value;
+                currentProc.remainingServiceTime -= 1;              // run the process for one unit of time
+                time += 1;                                          // add 1 unit of time to systemTime
+                // check if a shorter process is out there...
+                for (int j = 1; j < readyQ.Count(); j++)
+                {
+                    if (currentProc.remainingServiceTime > readyQ.ElementAt(j).Value.remainingServiceTime)
+                        currentProc = readyQ.ElementAt(j).Value;
+                    else
+                        i--;
+                }
+
+                if (currentProc.remainingServiceTime == 0)
+                {
+                    currentProc.execution = time - currentProc.wait;                                          // update currentProc execution time to systemTime - currentProc.response
+                    currentProc.turnaround = time - currentProc.arrivalTime;                                      // set turnaround time to systemTime - arrivalTime
+                    
+                }
+            }
             // same as FCFS, but is constantly checking if a shorter process is out there...
         }
     }

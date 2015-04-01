@@ -43,9 +43,8 @@ namespace OS_Simulation_Project
             Random quantum = new Random();
             double throughput;                          // amount of processes completed in a given time
             double CPU_utilization;                     // % time CPU is executing
-            var systemTime = new Stopwatch();           // keep track of current time
+            double systemTime = 0;                         // keep track of current time
 
-            systemTime.Start();
 
             processTable.Add(0, new PCB(6, true, 0));
             processTable.Add(1, new PCB(8, true, 4));
@@ -57,7 +56,7 @@ namespace OS_Simulation_Project
 
             for (int i = 0; i <= processTable.Count(); i++)
             {
-                if (processTable.ElementAt(i).Value.arrivalTime == systemTime.ElapsedMilliseconds)
+                if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
                     readyQ.Enqueue(processTable.ElementAt(i).Key);
             }
 
@@ -70,10 +69,9 @@ namespace OS_Simulation_Project
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-                uniSim.First_Come_First_Served(currProc, systemTime);
+                
             }
-
-            systemTime.Stop();
+            uniSim.First_Come_First_Served(currProc, systemTime);
         }
     }
 }
