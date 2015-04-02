@@ -157,6 +157,7 @@ namespace OS_Simulation_Project
                     currentProc = readyQ.ElementAt(i).Value;
                 currentProc.remainingServiceTime -= 1;              // run the process for one unit of time
                 time += 1;                                          // add 1 unit of time to systemTime
+
                 // check if a shorter process is out there...
                 for (int j = 1; j < readyQ.Count(); j++)
                 {
@@ -169,13 +170,9 @@ namespace OS_Simulation_Project
                 if (currentProc.remainingServiceTime == 0)
                 {
                     currentProc.execution = time - currentProc.wait;                                          // update currentProc execution time to systemTime - currentProc.response
-                    currentProc.turnaround = time - currentProc.arrivalTime;                                      // set turnaround time to systemTime - arrivalTime
-                    
+                    currentProc.turnaround = time - currentProc.arrivalTime;                                  // set turnaround time to systemTime - arrivalTime
                 }
             }
-            // same as FCFS, but is constantly checking if a shorter process is out there...
         }
     }
-
-
 }
