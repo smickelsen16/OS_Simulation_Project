@@ -16,26 +16,12 @@ namespace OS_Simulation_Project
 
         //public ProcessTable table;                       // list of all processes & associated info & ID's
 
-        public void MultiProcRoundRobin(Queue<int> rq, bool[] procArray, ProcessorAlgorithms rr, Random rand, Dictionary<int, PCB> procTab)
-        {
-            if (rq.Count() != 0)
-            {
-                for (int i = 0; i < rq.Count(); i++)
-                {
-                    for (int j = 1; j < 9; j++)
-                    {
-                        if (procArray[j] == false)
-                        {
-                            rr.Round_Robin(2, procTab);
-                            rq.Dequeue();
-                        }
-                    }
-                }
-            }
-        }
+        
 
         static void Main()
         {
+            
+
             bool Processor1, Processor2, Processor3, Processor4, Processor5, Processor6, Processor7, Processor8 = false;
             bool[] processorArray = new bool[8] { false, false, false, false, false, false, false, false };
             Queue<int> readyQ = new Queue<int>();
@@ -43,17 +29,33 @@ namespace OS_Simulation_Project
             Random quantum = new Random();
             double throughput;                          // amount of processes completed in a given time
             double CPU_utilization;                     // % time CPU is executing
-            double systemTime = 0;                         // keep track of current time
+            double systemTime = 0;                      // keep track of current time
 
+            // reading all processes, line by line into array of strings
+            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\OS_Simulation_Project\Mytext.txt");
 
-            processTable.Add(0, new PCB(6, true, 0));
-            processTable.Add(1, new PCB(8, true, 4));
-            processTable.Add(2, new PCB(4, true, 7));
-            processTable.Add(3, new PCB(4, true, 8));
-            processTable.Add(4, new PCB(2, true, 10));
-            processTable.Add(5, new PCB(7, true, 15));
-            processTable.Add(6, new PCB(5, true, 17));
+            // arrays to hold CPU & IO burst time
+            int[] CPU, IO;
 
+            // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
+            for (int i = 0; i < processes.Count(); i++ )
+            {
+                // split one line by spaces and assign each character to an array element
+                string[] currentProc = processes[i].Split(' ');
+                for (int j = 2; j < currentProc.Count(); j++)
+                {
+                    // if j is even, its a CPU burst time
+                    if (j%2 == 0)
+                        CPU[j-2] = Int32.Parse(currentProc[j]);  
+                    // if j is odd, its a IO burst time
+                    else
+                        IO[j-2] = Int32.Parse(currentProc[j]);
+                }
+                // add new process to table 
+                processTable.Add(Int32.Parse(currentProc[0]), new PCB(Int32.Parse(currentProc[1]), true, CPU, IO));
+            }
+
+            // if the system time is the processes arrival time, it is added to the ready queue
             for (int i = 0; i <= processTable.Count(); i++)
             {
                 if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
@@ -69,7 +71,6 @@ namespace OS_Simulation_Project
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
                 uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-                
             }
             uniSim.First_Come_First_Served(currProc, systemTime);
         }
