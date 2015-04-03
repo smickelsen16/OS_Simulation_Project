@@ -96,15 +96,15 @@ namespace OS_Simulation_Project
             currentProc.Item2.wait += currentProc.Item2.response;
 
             // run that process for the quantum 
-            if (currentProc.Item2.remainingServiceTime >= quantum)                    // check to make sure quantum isn't bigger than remaining time
+            if (currentProc.Item2.remainingCPUTime >= quantum)                    // check to make sure quantum isn't bigger than remaining time
             {
-                currentProc.Item2.remainingServiceTime -= quantum;                    // subtract quantum from remainingServiceTime
+                currentProc.Item2.remainingCPUTime -= quantum;                    // subtract quantum from remainingServiceTime
                 time += quantum;                                                      //  how to update system time with a stopwatch??
             }
             else
             {
-                time += currentProc.Item2.remainingServiceTime;                       // udate system time-- how with a stopwatch??
-                currentProc.Item2.remainingServiceTime = 0;                           // zero out remainingServiceTime
+                time += currentProc.Item2.remainingCPUTime;                       // udate system time-- how with a stopwatch??
+                currentProc.Item2.remainingCPUTime = 0;                           // zero out remainingServiceTime
             }
         }
 
@@ -113,7 +113,7 @@ namespace OS_Simulation_Project
         /// Runs each process to completion based on the time they arrive
         /// </summary>
         /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void First_Come_First_Served(Dictionary<int, PCB> readyQ, double time)
+        public void First_Come_First_Served(Dictionary<int, PCB> readyQ, int time)
         {
             PCB currentProc;
             for (int i = 0; i < readyQ.Count(); i++)
@@ -123,9 +123,8 @@ namespace OS_Simulation_Project
                 //currentProc.response = time - currentProc.arrivalTime;
 
                 // run the process to completion
-                time += currentProc.remainingServiceTime;                                                     // update system time to account for running the program 
-                currentProc.remainingServiceTime = 0;                                                         // process has completed
-                currentProc.execution = time - currentProc.response;                                          // update currentProc execution time to systemTime - currentProc.response
+                time += currentProc.remainingCPUTime;                                                     // update system time to account for running the program 
+                currentProc.remainingCPUTime = 0;                                                         // process has completed
                 currentProc.turnaround = time - currentProc.arrivalTime;                                      // set turnaround time to systemTime - arrivalTime
                 currentProc.wait += currentProc.response;
             }
@@ -148,28 +147,27 @@ namespace OS_Simulation_Project
         /// Will interrupt the current process if another process has a shorter remaining time 
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
-        public void Shortest_Remaining_Time(Dictionary<int, PCB> readyQ, double time)
+        public void Shortest_Remaining_Time(Dictionary<int, PCB> readyQ, int time)
         {
             PCB currentProc = null;
             for (int i = 0; i < readyQ.Count(); i++)
             {
                 if (currentProc == null)
                     currentProc = readyQ.ElementAt(i).Value;
-                currentProc.remainingServiceTime -= 1;              // run the process for one unit of time
+                currentProc.remainingCPUTime -= 1;              // run the process for one unit of time
                 time += 1;                                          // add 1 unit of time to systemTime
 
                 // check if a shorter process is out there...
                 for (int j = 1; j < readyQ.Count(); j++)
                 {
-                    if (currentProc.remainingServiceTime > readyQ.ElementAt(j).Value.remainingServiceTime)
+                    if (currentProc.remainingCPUTime > readyQ.ElementAt(j).Value.remainingCPUTime)
                         currentProc = readyQ.ElementAt(j).Value;
                     else
                         i--;
                 }
 
-                if (currentProc.remainingServiceTime == 0)
+                if (currentProc.remainingCPUTime == 0)
                 {
-                    currentProc.execution = time - currentProc.wait;                                          // update currentProc execution time to systemTime - currentProc.response
                     currentProc.turnaround = time - currentProc.arrivalTime;                                  // set turnaround time to systemTime - arrivalTime
                 }
             }

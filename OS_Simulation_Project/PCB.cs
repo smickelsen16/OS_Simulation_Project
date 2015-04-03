@@ -21,10 +21,16 @@ namespace OS_Simulation_Project
 
         public PCB(int arrivalTime, bool state, int[] CPU, int[] IO)
         {
-            this.expectedCPUTime = ;
-            this.expectedIOTime = ;
-            this.remainingCPUTime = ;
-            this.remainingIOTime = ;
+            // CPU total time is sum of individual burst times
+            foreach (int i in CPU) 
+                this.expectedCPUTime += CPU[i];
+            // IO total time is sum of individual burst times
+            foreach (int j in IO)
+                this.expectedIOTime += IO[j];
+
+            this.remainingIOTime = expectedIOTime;
+            this.remainingCPUTime = expectedCPUTime;
+       
             this.processState = state;
             this.response = -1;
             this.turnaround = 0;
