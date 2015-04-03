@@ -8,26 +8,28 @@ namespace OS_Simulation_Project
 {
     class PCB 
     {
-        public double execution;                           // time spent in execution thus far
-        public double expectedServiceTime;                 // service time required by process
-        public double remainingServiceTime;                // keeps track of remaining service time as process goes through queue
-        public bool processState;                          // true = ready, false = waiting
-        public double response;                            // time from request submission to first response
-        public double turnaround;                          // time from submission to completion of process
-        public double wait;                                // time process spends in ready queues
-        public double arrivalTime;                         // time process arrives in queue
+        public int expectedCPUTime;                     // service time in CPU Queues
+        public int remainingCPUTime;                    // remaining service time in CPU Queue
+        public int expectedIOTime;                      // service time required by process in IO Queues
+        public int remainingIOTime;                     // remaining service time in IO Queue
+        public bool processState;                       // true = ready, false = waiting
+        public int response;                            // time from request submission to first response
+        public int turnaround;                          // time from submission to completion of process
+        public int wait;                                // time process spends in ready queues
+        public int arrivalTime;                         // time process arrives in queue
         public string name;
 
-        public PCB(double expSerT, bool state, double arrive)
+        public PCB(int arrivalTime, bool state, int[] CPU, int[] IO)
         {
-            this.execution = 0;
-            this.expectedServiceTime = expSerT;
-            this.remainingServiceTime = expSerT;
+            this.expectedCPUTime = ;
+            this.expectedIOTime = ;
+            this.remainingCPUTime = ;
+            this.remainingIOTime = ;
             this.processState = state;
             this.response = -1;
             this.turnaround = 0;
             this.wait = 0;
-            this.arrivalTime = arrive;
+            this.arrivalTime = arrivalTime;
             this.name = "Process " + arrivalTime.ToString();
         }
 
