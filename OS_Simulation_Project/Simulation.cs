@@ -16,11 +16,11 @@ namespace OS_Simulation_Project
 
         //public ProcessTable table;                       // list of all processes & associated info & ID's
 
-        
 
         static void Main()
         {
-            
+            List<int> CPU = new List<int>();
+            List<int> IO = new List<int>();
 
             bool Processor1, Processor2, Processor3, Processor4, Processor5, Processor6, Processor7, Processor8 = false;
             bool[] processorArray = new bool[8] { false, false, false, false, false, false, false, false };
@@ -35,44 +35,48 @@ namespace OS_Simulation_Project
             string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\OS_Simulation_Project\Mytext.txt");
 
             // arrays to hold CPU & IO burst time
-            int[] CPU, IO;
+
 
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
-            for (int i = 0; i < processes.Count(); i++ )
+            for (int i = 0; i < 20; i++)
             {
                 // split one line by spaces and assign each character to an array element
                 string[] currentProc = processes[i].Split(' ');
                 for (int j = 2; j < currentProc.Count(); j++)
                 {
+                    CPU.Clear();
+                    IO.Clear();
                     // if j is even, its a CPU burst time
-                    if (j%2 == 0)
-                        CPU[j-2] = Int32.Parse(currentProc[j]);  
+                    if (j % 2 == 0)
+                        CPU.Add(Int32.Parse(currentProc[j]));
                     // if j is odd, its a IO burst time
                     else
-                        IO[j-2] = Int32.Parse(currentProc[j]);
+                        IO.Add(Int32.Parse(currentProc[j]));
                 }
                 // add new process to table 
                 processTable.Add(Int32.Parse(currentProc[0]), new PCB(Int32.Parse(currentProc[1]), true, CPU, IO));
+
+                Console.WriteLine(processTable.ElementAt(i).Value.ToString());
             }
 
             // if the system time is the processes arrival time, it is added to the ready queue
-            for (int i = 0; i <= processTable.Count(); i++)
-            {
-                if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
-                    readyQ.Enqueue(processTable.ElementAt(i).Key);
-            }
+            //for (int i = 0; i <= processTable.Count(); i++)
+            //{
+            //    if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
+            //        readyQ.Enqueue(processTable.ElementAt(i).Key);
+            //}
 
             ProcessorAlgorithms uniSim = new ProcessorAlgorithms();
 
-            // one queue... just repeat with different order/number of RR queues??
-            for (int i = 0; i < processTable.Count(); i++)
-            {
-                Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-            }
-            uniSim.First_Come_First_Served(currProc, systemTime);
+            //// one queue... just repeat with different order/number of RR queues??
+            //for (int i = 0; i < processTable.Count(); i++)
+            //{
+            //    Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
+            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
+            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+            //}
+            //uniSim.First_Come_First_Served(currProc, systemTime);
         }
     }
 }
