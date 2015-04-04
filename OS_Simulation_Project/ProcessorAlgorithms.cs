@@ -172,5 +172,10 @@ namespace OS_Simulation_Project
                 }
             }
         }
+
+        public void IO_Algorithm()
+        {
+
+        }
     }
 }

@@ -42,10 +42,12 @@ namespace OS_Simulation_Project
             {
                 // split one line by spaces and assign each character to an array element
                 string[] currentProc = processes[i].Split(' ');
+
+                CPU.Clear();
+                IO.Clear();
+
                 for (int j = 2; j < currentProc.Count(); j++)
                 {
-                    CPU.Clear();
-                    IO.Clear();
                     // if j is even, its a CPU burst time
                     if (j % 2 == 0)
                         CPU.Add(Int32.Parse(currentProc[j]));
@@ -56,27 +58,27 @@ namespace OS_Simulation_Project
                 // add new process to table 
                 processTable.Add(Int32.Parse(currentProc[0]), new PCB(Int32.Parse(currentProc[1]), true, CPU, IO));
 
-                Console.WriteLine(processTable.ElementAt(i).Value.ToString());
+                Console.WriteLine(processTable.ElementAt(i).Value.ToString() + "\n");
             }
 
-            // if the system time is the processes arrival time, it is added to the ready queue
-            //for (int i = 0; i <= processTable.Count(); i++)
-            //{
-            //    if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
-            //        readyQ.Enqueue(processTable.ElementAt(i).Key);
-            //}
+             //if the system time is the processes arrival time, it is added to the ready queue
+            for (int i = 0; i <= processTable.Count(); i++)
+            {
+                if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
+                    readyQ.Enqueue(processTable.ElementAt(i).Key);
+            }
 
             ProcessorAlgorithms uniSim = new ProcessorAlgorithms();
 
-            //// one queue... just repeat with different order/number of RR queues??
-            //for (int i = 0; i < processTable.Count(); i++)
-            //{
-            //    Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
-            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
-            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-            //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-            //}
-            //uniSim.First_Come_First_Served(currProc, systemTime);
+            // one queue... just repeat with different order/number of RR queues??
+            for (int i = 0; i < processTable.Count(); i++)
+            {
+                Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
+            }
+            uniSim.First_Come_First_Served(currProc, systemTime);
         }
     }
 }

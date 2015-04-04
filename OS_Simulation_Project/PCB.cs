@@ -43,7 +43,7 @@ namespace OS_Simulation_Project
         {
             return name + "'s Stats\n" +
                 "Expected CPU Time: " + expectedCPUTime.ToString() +
-                "Expected IO Time: " + expectedIOTime.ToString() +
+                "\nExpected IO Time: " + expectedIOTime.ToString() +
                 "\nArrival Time: " + arrivalTime.ToString() +
                 "\nProcess State: " + processState.ToString() +
                 "\nResponse: " + response.ToString() +
