@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OS_Simulation_Project
 {
-    class ProcessorAlgorithms
+    class UniprocessorAlgorithms
     {
         ///// <summary>
         ///// Preemptive (?)
@@ -90,22 +90,34 @@ namespace OS_Simulation_Project
         public void Round_Robin(int quantum, Tuple<int, PCB> currentProc, int time)
         {
             // calculate the response time for the current process
-            if (currentProc.Item2.response == -1)
-                currentProc.Item2.response = time - currentProc.Item2.arrivalTime;
-
-            currentProc.Item2.wait += currentProc.Item2.response;
+            if (currentProc.Item2.response == -1) {
+                currentProc.Item2.response = time - currentProc.Item2.CPUarrivalTime;
+                // add response time to CPU Wait Time
+                currentProc.Item2.CPUwait += currentProc.Item2.response;
+            }
 
             // run that process for the quantum 
             if (currentProc.Item2.remainingCPUTime >= quantum)                    // check to make sure quantum isn't bigger than remaining time
             {
                 currentProc.Item2.remainingCPUTime -= quantum;                    // subtract quantum from remainingServiceTime
-                time += quantum;                                                      //  how to update system time with a stopwatch??
+                time += quantum;
             }
             else
             {
-                time += currentProc.Item2.remainingCPUTime;                       // udate system time-- how with a stopwatch??
+                time += currentProc.Item2.remainingCPUTime;                       // udate system Time
                 currentProc.Item2.remainingCPUTime = 0;                           // zero out remainingServiceTime
             }
+
+            // check if process finished and update stats accordingly; will pass to appropriate queues in Simulation.cs
+            if (currentProc.Item2.remainingCPUTime == 0)
+            {
+                currentProc.Item2.CPUturnaround = (time - currentProc.Item2.CPUarrivalTime);        // turnaround is current system time - arrival time
+                currentProc.Item2.processState = false;     // set state to false so it can go into IO Queue
+                currentProc.Item2.CPUwait = (currentProc.Item2.CPUturnaround - currentProc.Item2.expectedCPUTime);      // wait = turnaround - expSerTime
+                // add to IO Queue or completed Queue
+            }
+
+            // if not finished, add to back of CPU Queue to be run through again
         }
 
         /// <summary>
@@ -113,33 +125,28 @@ namespace OS_Simulation_Project
         /// Runs each process to completion based on the time they arrive
         /// </summary>
         /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void First_Come_First_Served(Dictionary<int, PCB> readyQ, int time)
+        public void First_Come_First_Served(Tuple<int, PCB> currentProc, int time)
         {
-            PCB currentProc;
-            for (int i = 0; i < readyQ.Count(); i++)
-            {
-                currentProc = readyQ.ElementAt(i).Value;
-                // set the processes response time to the systemTime - arrivalTime
-                //currentProc.response = time - currentProc.arrivalTime;
-
-                // run the process to completion
-                time += currentProc.remainingCPUTime;                                                     // update system time to account for running the program 
-                currentProc.remainingCPUTime = 0;                                                         // process has completed
-                currentProc.turnaround = time - currentProc.arrivalTime;                                      // set turnaround time to systemTime - arrivalTime
-                currentProc.wait += currentProc.response;
-            }
+            // run the process to completion
+            time += currentProc.Item2.remainingCPUTime;                                                     // update system time to account for running the program 
+            currentProc.Item2.remainingCPUTime = 0;                                                         // process has completed
+            currentProc.Item2.CPUturnaround = time - currentProc.Item2.CPUarrivalTime;                      // set turnaround time to systemTime - arrivalTime
+            currentProc.Item2.CPUwait = currentProc.Item2.CPUturnaround - currentProc.Item2.expectedCPUTime; //CPU wait is turnaround - expected service time
+            currentProc.Item2.processState = false;
         }
 
-        /// <summary>
-        /// Non-Preemptive
-        /// Runs & completes shortest processes first
-        /// Will preempt current process if a shorter process arrives during execution
-        /// </summary>
-        /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void Shortest_Process_Next(Dictionary<int, PCB> ReadyQueue)
+        // how do we accrue wait time in IO queue...
+        //process state must be false to get into IO Queue, when it leaves, it switches to true
+        public void I_O_Algorithm(Tuple<int, PCB> currProc, int time)
         {
-            // same as FCFS, but runs shortest procs first
+            currProc.Item2.IOarrivalTime = time;        // set the arrivalTime in IO Queue to current system time
+            // add IO burst time to systemTime
+            time += currProc.Item2.remainingIOTime;
+            currProc.Item2.remainingIOTime = 0;
+            currProc.Item2.processState = true;
+
         }
+
 
         /// <summary>
         /// Preemptive
@@ -168,14 +175,11 @@ namespace OS_Simulation_Project
 
                 if (currentProc.remainingCPUTime == 0)
                 {
-                    currentProc.turnaround = time - currentProc.arrivalTime;                                  // set turnaround time to systemTime - arrivalTime
+                    currentProc.CPUturnaround = time - currentProc.CPUarrivalTime;          // set turnaround time to systemTime - arrivalTime
+                    currentProc.CPUwait = currentProc.CPUturnaround - currentProc.expectedCPUTime;
+                    currentProc.processState = false;
                 }
             }
-        }
-
-        public void IO_Algorithm()
-        {
-
         }
     }
 }

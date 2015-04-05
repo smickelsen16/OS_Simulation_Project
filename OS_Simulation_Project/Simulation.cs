@@ -13,29 +13,16 @@ namespace OS_Simulation_Project
     /// </summary>
     class Simulation
     {
-
-        //public ProcessTable table;                       // list of all processes & associated info & ID's
-
-
-        static void Main()
+        // Creates process table based on randomly generated text file
+        public Dictionary<int, PCB> CreateProcessTable()
         {
             List<int> CPU = new List<int>();
             List<int> IO = new List<int>();
 
-            bool Processor1, Processor2, Processor3, Processor4, Processor5, Processor6, Processor7, Processor8 = false;
-            bool[] processorArray = new bool[8] { false, false, false, false, false, false, false, false };
-            Queue<int> readyQ = new Queue<int>();
-            Dictionary<int, PCB> processTable = new Dictionary<int, PCB>();         // going to be text file?????????????
-            Random quantum = new Random();
-            double throughput;                          // amount of processes completed in a given time
-            double CPU_utilization;                     // % time CPU is executing
-            double systemTime = 0;                      // keep track of current time
+            Dictionary<int, PCB> processTable = new Dictionary<int, PCB>();
 
             // reading all processes, line by line into array of strings
             string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\OS_Simulation_Project\Mytext.txt");
-
-            // arrays to hold CPU & IO burst time
-
 
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
             for (int i = 0; i < 20; i++)
@@ -60,25 +47,12 @@ namespace OS_Simulation_Project
 
                 Console.WriteLine(processTable.ElementAt(i).Value.ToString() + "\n");
             }
-
-             //if the system time is the processes arrival time, it is added to the ready queue
-            for (int i = 0; i <= processTable.Count(); i++)
-            {
-                if (processTable.ElementAt(i).Value.arrivalTime == systemTime)
-                    readyQ.Enqueue(processTable.ElementAt(i).Key);
-            }
-
-            ProcessorAlgorithms uniSim = new ProcessorAlgorithms();
-
-            // one queue... just repeat with different order/number of RR queues??
-            for (int i = 0; i < processTable.Count(); i++)
-            {
-                Tuple<int, PCB> currProc = new Tuple<int, PCB>(processTable.ElementAt(i).Key, processTable.ElementAt(i).Value);
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);                                   
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-                uniSim.Round_Robin(quantum.Next(2, 11), currProc, systemTime);
-            }
-            uniSim.First_Come_First_Served(currProc, systemTime);
+            return processTable;
         }
+
+        public int systemTime = 0;                          // keeps track of system time
+
+        public int throughput, CPU_utilization = 0;         // stats for whole system
+
     }
 }

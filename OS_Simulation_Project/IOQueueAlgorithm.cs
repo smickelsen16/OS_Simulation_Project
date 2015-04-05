@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace OS_Simulation_Project
 {
-    class IOQueue
+    class IOQueueAlgorithm
     {
-
+       
     }
 }
