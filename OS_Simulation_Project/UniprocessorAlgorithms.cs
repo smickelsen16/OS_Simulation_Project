@@ -87,7 +87,7 @@ namespace OS_Simulation_Project
         /// </summary>
         /// <param name="quantum"> time allocated to each process per RR cycle </param>
         /// <param name="ReadyQueue"> list of processes to be run </param>
-        public void Round_Robin(int quantum, Tuple<int, PCB> currentProc, int time)
+        public void Round_Robin(int quantum, Dictionary<int, PCB> currentProc, int time)
         {
             // calculate the response time for the current process
             if (currentProc.Item2.response == -1) {
