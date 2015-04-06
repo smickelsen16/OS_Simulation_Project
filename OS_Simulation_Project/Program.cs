@@ -15,8 +15,6 @@ namespace OS_Simulation_Project
 
         static void Main()
         {
-            Stopwatch time = new Stopwatch();
-
             Simulation s = new Simulation();
 
             Dictionary<int, PCB> processTable = s.CreateProcessTable();

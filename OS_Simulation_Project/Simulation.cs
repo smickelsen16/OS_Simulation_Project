@@ -22,7 +22,7 @@ namespace OS_Simulation_Project
             Dictionary<int, PCB> processTable = new Dictionary<int, PCB>();
 
             // reading all processes, line by line into array of strings
-            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\OS_Simulation_Project\Mytext.txt");
+            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\Wesley\Desktop\Mytext.txt");
 
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
             for (int i = 0; i < 20; i++)

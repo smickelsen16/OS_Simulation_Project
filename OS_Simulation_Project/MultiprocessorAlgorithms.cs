@@ -9,6 +9,7 @@ namespace OS_Simulation_Project
     class MultiprocessorAlgorithms
     {
         List<Thread> Processors = new List<Thread>();
+        bool executing = true;
         public void MultiProcRoundRobin(Dictionary<int, PCB> procs, Queue<int> rq, UniprocessorAlgorithms u, int quantum, int time, int procNum)
         {
             if (rq.Count() != 0)                                        // Check that ready queue isn't empty
@@ -23,16 +24,20 @@ namespace OS_Simulation_Project
                     }
                     else
                     {
-                        for (int j = 0; j < procNum; j++)
+                        while (executing)
                         {
-                            if (!Processors.ElementAt(j).IsAlive)
+                            for (int j = 0; j < procNum; j++)
                             {
-                                Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), ref time)));
-                                Processors.ElementAt(j).Start();
-                                rq.Dequeue();
+                                if (!Processors.ElementAt(j).IsAlive)
+                                {
+                                    Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), ref time)));
+                                    Processors.ElementAt(j).Start();
+                                    rq.Dequeue();
+                                    executing = false;
+                                }
                             }
                         }
-                        // Do something if they're all busy
+                        executing = true;
                     }
                 }
             }
