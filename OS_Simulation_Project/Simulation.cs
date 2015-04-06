@@ -45,12 +45,12 @@ namespace OS_Simulation_Project
                 // add new process to table 
                 processTable.Add(Int32.Parse(currentProc[0]), new PCB(Int32.Parse(currentProc[1]), true, CPU, IO));
 
-                Console.WriteLine(processTable.ElementAt(i).Value.ToString() + "\n");
+                //Console.WriteLine(processTable.ElementAt(i).Value.ToString() + "\n");
             }
             return processTable;
         }
 
-        public int systemTime = 0;                          // keeps track of system time
+        //public int systemTime = 0;                          // keeps track of system time
 
         public int throughput, CPU_utilization = 0;         // stats for whole system
 

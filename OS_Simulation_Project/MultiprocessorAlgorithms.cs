@@ -17,7 +17,7 @@ namespace OS_Simulation_Project
                 {
                     if (Processors.Count() < procNum)                   // Check if too many threads have been made
                     {
-                        Processors.Add(new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), time)));
+                        Processors.Add(new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), ref time)));
                         Processors.ElementAt(i).Start();
                         rq.Dequeue();                                   // Remove process from ready queue                                      // Need a way to add them back to queue when finished
                     }
@@ -27,7 +27,7 @@ namespace OS_Simulation_Project
                         {
                             if (!Processors.ElementAt(j).IsAlive)
                             {
-                                Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), time)));
+                                Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, procs.ElementAt(i), ref time)));
                                 Processors.ElementAt(j).Start();
                                 rq.Dequeue();
                             }
@@ -46,7 +46,7 @@ namespace OS_Simulation_Project
                 {
                     if (Processors.Count() < procNum)                   // Check if too many threads have been made
                     {
-                        Processors.Add(new Thread(() => u.First_Come_First_Served(procs.ElementAt(i), time)));
+                        Processors.Add(new Thread(() => u.First_Come_First_Served(procs.ElementAt(i), ref time)));
                         Processors.ElementAt(i).Start();
                         rq.Dequeue();                                   // Remove process from ready queue                                      // Need a way to add them back to queue when finished
                     }
@@ -56,7 +56,7 @@ namespace OS_Simulation_Project
                         {
                             if (!Processors.ElementAt(j).IsAlive)
                             {
-                                Processors.Insert(j, new Thread(() => u.First_Come_First_Served(procs.ElementAt(i), time)));
+                                Processors.Insert(j, new Thread(() => u.First_Come_First_Served(procs.ElementAt(i), ref time)));
                                 Processors.ElementAt(j).Start();
                                 rq.Dequeue();
                             }
@@ -75,7 +75,7 @@ namespace OS_Simulation_Project
                 {
                     if (Processors.Count() < procNum)                   // Check if too many threads have been made
                     {
-                        Processors.Add(new Thread(() => u.Shortest_Remaining_Time(procs, time)));
+                        Processors.Add(new Thread(() => u.Shortest_Remaining_Time(procs, ref time)));
                         Processors.ElementAt(i).Start();
                         rq.Dequeue();                                   // Remove process from ready queue                                      // Need a way to add them back to queue when finished
                     }
@@ -85,7 +85,7 @@ namespace OS_Simulation_Project
                         {
                             if (!Processors.ElementAt(j).IsAlive)
                             {
-                                Processors.Insert(j, new Thread(() => u.Shortest_Remaining_Time(procs, time)));
+                                Processors.Insert(j, new Thread(() => u.Shortest_Remaining_Time(procs, ref time)));
                                 Processors.ElementAt(j).Start();
                                 rq.Dequeue();
                             }
