@@ -34,6 +34,7 @@ namespace OS_Simulation_Project
                                     Processors.ElementAt(j).Start();
                                     rq.Dequeue();
                                     executing = false;
+                                    break;
                                 }
                             }
                         }
