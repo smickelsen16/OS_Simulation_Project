@@ -15,8 +15,9 @@ namespace OS_Simulation_Project
 
         static void Main()
         {
+            FileGenerate fg = new FileGenerate();
             Simulation s = new Simulation();
-
+            
             Dictionary<int, PCB> processTable = s.CreateProcessTable();
 
             Queue<PCB> CPU_ready_Q = new Queue<PCB>();

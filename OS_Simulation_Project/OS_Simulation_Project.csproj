@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPUQueue.cs" />
+    <Compile Include="FileGenerate.cs" />
     <Compile Include="IOQueueAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MultiprocessorAlgorithms.cs" />
