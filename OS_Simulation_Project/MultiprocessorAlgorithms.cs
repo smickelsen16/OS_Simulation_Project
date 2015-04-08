@@ -9,12 +9,17 @@ namespace OS_Simulation_Project
     class MultiprocessorAlgorithms
     {
         List<Thread> Processors = new List<Thread>();
+        List<Queue<KeyValuePair<int, PCB>>> queueList;
+        int wesley = 0;
+        List<ThreadInheriter> tiList;
         bool executing = true;
+        List<Dictionary<int, PCB>> queueElement;
+        int finished = 0; 
         public void MultiProcRoundRobin(Dictionary<int, PCB> procs, Queue<KeyValuePair<int, PCB>> rq, UniprocessorAlgorithms u, int quantum, int time, int procNum)
         {
+            wesley++; // DEFINITELY IN THE WRONG PLACE
             int i = 0;
-            int finished = 0;
-            Dictionary<int, PCB> queueElement;
+            queueElement[wesley] = new Dictionary<int,PCB>();
 
             do
             {
@@ -22,9 +27,11 @@ namespace OS_Simulation_Project
                 {
                     if (Processors.Count() < procNum)
                     {
-                        Processors.Add(new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
+                        tiList.Add(new ThreadInheriter(rq.Peek().Key));
+
+                        Processors.Add(tiList[i].t = new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
                         Processors.ElementAt(i).Start();
-                        queueElement.Add(rq.Dequeue());
+                        queueElement[wesley].Add(rq.Peek().Key, rq.Dequeue().Value);
                         i++;
                     }
                     else
@@ -36,12 +43,24 @@ namespace OS_Simulation_Project
                                 if (!Processors.ElementAt(j).IsAlive)
                                 {
                                     if (procs.ElementAt(j).Value.remainingCPUTime != 0)
-                                        rq.Enqueue(queueElement);//FIX ME
+                                    {
+                                        for (int k = 0; k < procNum; k++)
+                                            if (queueElement[wesley].ElementAt(k).Key == tiList[j].processID)
+                                            {
+                                                queueList[wesley].Enqueue(queueElement[wesley].ElementAt(k));
+                                                queueElement[wesley].Remove(tiList[j].processID);
+                                                if (wesley < 3)
+                                                    Processors.Add(new Thread(() => MultiProcRoundRobin(procs, queueList[wesley], u, quantum + 3, time, procNum))); // NEED TO UPDATE WIHOUT CALLING ENTIRE FUNCTION
+                                                else
+                                                    Processors.Add(new Thread(() => MultiProcFCFS(procs, queueList[wesley], u, time, procNum)));
+                                            }
+                                    }
                                     else
                                         finished++;
-                                    Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
+                                    tiList[j] = new ThreadInheriter(rq.Peek().Key);
+                                    Processors.Insert(j, tiList[j].t = new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
                                     Processors.ElementAt(j).Start();
-                                    rq.Dequeue();
+                                    queueElement[wesley].Add(rq.Peek().Key, rq.Dequeue().Value);
                                     executing = false;
                                     break;
                                 }
@@ -50,7 +69,7 @@ namespace OS_Simulation_Project
                         executing = true;
                     }
                 }
-            } while (finished != procs.Count() - procNum);
+            } while (finished != procs.Count());
 
         }
 
