@@ -11,8 +11,6 @@ namespace OS_Simulation_Project
     {
         static int systemTime = 0;
 
-        static Random quantum = new Random();
-
         static void Main()
         {
             FileGenerate fg = new FileGenerate();
@@ -31,6 +29,7 @@ namespace OS_Simulation_Project
             for (int i = 0; i < processTable.Count(); i++)
             {
                 //if (processTable.ElementAt(i).Value.CPUarrivalTime == systemTime)
+                //FIX ME!!!!!!!! WHEN TO ADD PROCESSES TO READY_Q
                 CPU_ready_Q.Enqueue(processTable.ElementAt(i).Value);
                 if (CPU_ready_Q.Count() != 0)
                 {
@@ -39,16 +38,12 @@ namespace OS_Simulation_Project
                     // 1st Queue
                     for (int j = 0; j < processTable.Count(); j++)
                     {
-                        int quantum1 = quantum.Next(2, 11);
-                        int quantum2 = quantum.Next(2, 11);
-                        int quantum3 = quantum.Next(2, 11);
                         KeyValuePair<int, PCB> currProc = processTable.ElementAt(j);
-                        uniSim.Round_Robin(quantum1, currProc, ref systemTime);
-                        uniSim.Round_Robin(quantum2, currProc, ref systemTime);
-                        uniSim.Round_Robin(quantum3, currProc, ref systemTime);
+                        uniSim.Round_Robin(2, currProc, ref systemTime);
+                        uniSim.Round_Robin(4, currProc, ref systemTime);
+                        uniSim.Round_Robin(6, currProc, ref systemTime);
                         uniSim.First_Come_First_Served(currProc, ref systemTime);
                         // need to get system time to update here as well, not just in the algorithm
-
                     }
 
                     for (int p = 0; p < processTable.Count(); p++)
@@ -60,8 +55,8 @@ namespace OS_Simulation_Project
                     //for (int k = 0; k < processTable.Count(); k++)
                     //{
                     //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(k);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
+                    //    uniSim.Round_Robin(6, currProc, ref systemTime);
+                    //    uniSim.Round_Robin(7, currProc, ref systemTime);
                     //    uniSim.First_Come_First_Served(currProc, ref systemTime);
                     //}
 
@@ -69,9 +64,9 @@ namespace OS_Simulation_Project
                     //for (int l = 0; l < processTable.Count(); l++)
                     //{
                     //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(l);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
+                    //    uniSim.Round_Robin(3, currProc, ref systemTime);
+                    //    uniSim.Round_Robin(5, currProc, ref systemTime);
+                    //    uniSim.Round_Robin(7, currProc, ref systemTime);
                     //}
                     //uniSim.Shortest_Remaining_Time(processTable, ref systemTime);
 
@@ -79,8 +74,8 @@ namespace OS_Simulation_Project
                     //for (int m = 0; m < processTable.Count(); m++)
                     //{
                     //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(m);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
-                    //    uniSim.Round_Robin(quantum.Next(2, 11), currProc, ref systemTime);
+                    //    uniSim.Round_Robin(2, currProc, ref systemTime);
+                    //    uniSim.Round_Robin(6, currProc, ref systemTime);
                     //}
                     //uniSim.Shortest_Remaining_Time(processTable, ref systemTime);
                 }

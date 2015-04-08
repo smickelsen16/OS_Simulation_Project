@@ -113,13 +113,26 @@ namespace OS_Simulation_Project
                 // check if process finished and update stats accordingly; will pass to appropriate queues in Simulation.cs
                 if (currentProc.Value.remainingCPUTime == 0)
                 {
-                    currentProc.Value.CPUturnaround = (time - currentProc.Value.CPUarrivalTime);        // turnaround is current system time - arrival time
-                    currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
-                    currentProc.Value.CPUwait = (currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime);      // wait = turnaround - expSerTime
-                    // add to IO Queue or completed Queue
+                    // remove CPU burst that just completed
+                    currentProc.Value.CPU_bursts.RemoveAt(0);
+
+                    // run I/O burst
+                    I_O_Algorithm(currentProc, ref time);
+
+                    // check to see if CPU burst queue is empty...
+                    if (currentProc.Value.CPU_bursts.Count() == 0)
+                    {
+                        currentProc.Value.CPUturnaround = (time - currentProc.Value.CPUarrivalTime);        // turnaround is current system time - arrival time
+                        currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
+                        currentProc.Value.CPUwait = (currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime);      // wait = turnaround - expSerTime
+                        
+                    }
+                    //else
+                    // if still CPU bursts to run, set remainingCPUTime to next burst
+                    currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
+                        //add to back of readyQ to be run through again
                 }
             }
-            // if not finished, add to back of CPU Queue to be run through again
         }
 
         /// <summary>
@@ -134,9 +147,23 @@ namespace OS_Simulation_Project
                 // run the process to completion
                 time += currentProc.Value.remainingCPUTime;                                                     // update system time to account for running the program 
                 currentProc.Value.remainingCPUTime = 0;                                                         // process has completed
-                currentProc.Value.CPUturnaround = time - currentProc.Value.CPUarrivalTime;                      // set turnaround time to systemTime - arrivalTime
-                currentProc.Value.CPUwait = currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
-                currentProc.Value.processState = false;
+
+                // remove current burst
+                currentProc.Value.CPU_bursts.RemoveAt(0);
+
+                if (currentProc.Value.CPU_bursts.Count() == 0)
+                {
+                    currentProc.Value.CPUturnaround = time - currentProc.Value.CPUarrivalTime;                      // set turnaround time to systemTime - arrivalTime
+                    currentProc.Value.CPUwait = currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
+                    currentProc.Value.processState = false;
+                    // run I/O burst
+                    I_O_Algorithm(currentProc, ref time);
+                }
+                else
+                {
+                    currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
+                    // go through FCFS again or switch to IO burst if necessary
+                }
             }
         }
 
@@ -151,7 +178,6 @@ namespace OS_Simulation_Project
             currProc.Value.processState = true;
 
         }
-
 
         /// <summary>
         /// Preemptive
@@ -168,9 +194,8 @@ namespace OS_Simulation_Project
                     currentProc = readyQ.ElementAt(i).Value;
                 if (time >= currentProc.CPUarrivalTime)
                 {
-
                     currentProc.remainingCPUTime -= 1;              // run the process for one unit of time
-                    time += 1;                                          // add 1 unit of time to systemTime
+                    time += 1;                                      // add 1 unit of time to systemTime
 
                     // check if a shorter process is out there...
                     for (int j = 1; j < readyQ.Count(); j++)
@@ -186,6 +211,8 @@ namespace OS_Simulation_Project
                         currentProc.CPUturnaround = time - currentProc.CPUarrivalTime;          // set turnaround time to systemTime - arrivalTime
                         currentProc.CPUwait = currentProc.CPUturnaround - currentProc.expectedCPUTime;
                         currentProc.processState = false;
+                        // run I/O burst
+                        I_O_Algorithm(readyQ.ElementAt(i), ref time);
                     }
                 }
             }
