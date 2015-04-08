@@ -16,12 +16,12 @@ namespace OS_Simulation_Project
         public int remainingIOTime = 0;                     // remaining service time in IO Queue (of 1 burst)
         public bool processState;                           // true = CPU ready, false = IO ready
         public int response = 0;                            // time from request submission to first response
-        public int CPUturnaround = 0;                       // time from submission to completion of process in CPU
-        public int IOturnaround = 0;                        // time from submission to completion of process in IO
-        public int CPUwait = 0;                             // time process spends in CPU ready queue
-        public int IOwait = 0;                              // time process spends in IO ready queue
-        public int CPUarrivalTime = 0;                      // time process arrives in CPU queue
-        public int IOarrivalTime = 0;                       // time process arrives in IO queue
+        public int turnaround = 0;                       // time from submission to completion of process in CPU
+        
+        public int wait = 0;                             // time process spends in CPU ready queue
+       
+        public int arrivalTime = 0;                      // time process arrives in CPU queue
+        
         public string name;
 
         public PCB(int arrivalTime, bool state, List<int> CPU, List<int> IO)
@@ -41,12 +41,9 @@ namespace OS_Simulation_Project
 
             this.processState = state;
             this.response = -1;
-            this.CPUturnaround = 0;
-            this.CPUarrivalTime = arrivalTime;
-            this.CPUwait = 0;
-            this.IOarrivalTime = 0;
-            this.IOturnaround = 0;
-            this.IOwait = 0;
+            this.turnaround = 0;
+            this.arrivalTime = arrivalTime;
+            this.wait = 0;
             this.name = "Process " + arrivalTime.ToString();
         }
 
@@ -55,14 +52,14 @@ namespace OS_Simulation_Project
             return name + "'s Stats\n" +
                 "Expected CPU Time: " + expectedCPUTime.ToString() +
                 "\nExpected IO Time: " + expectedIOTime.ToString() +
-                "\nCPU Arrival Time: " + CPUarrivalTime.ToString() +
+                "\nCPU Arrival Time: " + arrivalTime.ToString() +
                 "\nIO Arrival Time: " + IOarrivalTime.ToString() +
                 "\nProcess State: " + processState.ToString() +
                 "\nResponse: " + response.ToString() +
-                "\nCPU Turnaround: " + CPUturnaround.ToString() +
+                "\nCPU Turnaround: " + turnaround.ToString() +
                 "\nIO Turnaround: " + IOturnaround.ToString() +
                 "\nIO Wait: " + IOwait.ToString() +
-                "\nCPU Wait: " + CPUwait.ToString();
+                "\nCPU Wait: " + wait.ToString();
         }
     }
 }

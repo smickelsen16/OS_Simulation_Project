@@ -15,22 +15,23 @@ namespace OS_Simulation_Project
         {
             FileGenerate fg = new FileGenerate();
             Simulation s = new Simulation();
-            
+
             Dictionary<int, PCB> processTable = s.CreateProcessTable();
 
             Queue<PCB> CPU_ready_Q = new Queue<PCB>();
             Queue<PCB> IO_ready_Q = new Queue<PCB>();
 
             UniprocessorAlgorithms uniSim = new UniprocessorAlgorithms();
+
+            for (int h = 0; h < processTable.Count(); h++)
+                CPU_ready_Q.Enqueue(processTable.ElementAt(h).Value);
+            
             // continuously run through the simulation until all are done
             //do
             //{
             // if the system time is the processes arrival time, it is added to the ready queue
             for (int i = 0; i < processTable.Count(); i++)
             {
-                //if (processTable.ElementAt(i).Value.CPUarrivalTime == systemTime)
-                //FIX ME!!!!!!!! WHEN TO ADD PROCESSES TO READY_Q
-                CPU_ready_Q.Enqueue(processTable.ElementAt(i).Value);
                 if (CPU_ready_Q.Count() != 0)
                 {
                     // Run through multiple queues... collect stat information and write to file at the end, 

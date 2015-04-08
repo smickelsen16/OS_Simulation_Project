@@ -90,12 +90,12 @@ namespace OS_Simulation_Project
         /// 
         public void Round_Robin(int quantum, KeyValuePair<int, PCB> currentProc, ref int time)
         {
-            if (time >= currentProc.Value.CPUarrivalTime)
+            if (time >= currentProc.Value.arrivalTime)
             {
                 // calculate the response time for the current process
                 if (currentProc.Value.response == -1)
                 {
-                    currentProc.Value.response = time - currentProc.Value.CPUarrivalTime;
+                    currentProc.Value.response = time - currentProc.Value.arrivalTime;
                 }
 
                 // run that process for the quantum 
@@ -113,26 +113,33 @@ namespace OS_Simulation_Project
                 // check if process finished and update stats accordingly; will pass to appropriate queues in Simulation.cs
                 if (currentProc.Value.remainingCPUTime == 0)
                 {
+                    // remove from readyQ
+
                     // remove CPU burst that just completed
                     currentProc.Value.CPU_bursts.RemoveAt(0);
 
+                    // check to see if CPU burst queue is empty...
+                    if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
+                    {
+                        currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);        // turnaround is current system time - arrival time
+                        currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
+                        currentProc.Value.wait = (currentProc.Value.turnaround - currentProc.Value.expectedCPUTime);      // wait = turnaround - expSerTime
+                    }
+                    else
+                        // if still CPU bursts to run, set remainingCPUTime to next burst
+                        currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
+                    //add to back of readyQ to be run through again
+
                     // run I/O burst
                     I_O_Algorithm(currentProc, ref time);
-
-                    // check to see if CPU burst queue is empty...
-                    if (currentProc.Value.CPU_bursts.Count() == 0)
-                    {
-                        currentProc.Value.CPUturnaround = (time - currentProc.Value.CPUarrivalTime);        // turnaround is current system time - arrival time
-                        currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
-                        currentProc.Value.CPUwait = (currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime);      // wait = turnaround - expSerTime
-                        
-                    }
-                    //else
-                    // if still CPU bursts to run, set remainingCPUTime to next burst
-                    currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
-                        //add to back of readyQ to be run through again
                 }
             }
+            else
+            {
+                time = currentProc.Value.arrivalTime;
+                Round_Robin(quantum, currentProc, ref time);
+            }
+
         }
 
         /// <summary>
@@ -142,7 +149,7 @@ namespace OS_Simulation_Project
         /// <param name="ReadyQueue"> list of processes to be run </param>
         public void First_Come_First_Served(KeyValuePair<int, PCB> currentProc, ref int time)
         {
-            if (time >= currentProc.Value.CPUarrivalTime)
+            if (time >= currentProc.Value.arrivalTime)
             {
                 // run the process to completion
                 time += currentProc.Value.remainingCPUTime;                                                     // update system time to account for running the program 
@@ -153,8 +160,8 @@ namespace OS_Simulation_Project
 
                 if (currentProc.Value.CPU_bursts.Count() == 0)
                 {
-                    currentProc.Value.CPUturnaround = time - currentProc.Value.CPUarrivalTime;                      // set turnaround time to systemTime - arrivalTime
-                    currentProc.Value.CPUwait = currentProc.Value.CPUturnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
+                    currentProc.Value.turnaround = time - currentProc.Value.arrivalTime;                      // set turnaround time to systemTime - arrivalTime
+                    currentProc.Value.wait = currentProc.Value.turnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
                     currentProc.Value.processState = false;
                     // run I/O burst
                     I_O_Algorithm(currentProc, ref time);
@@ -192,7 +199,7 @@ namespace OS_Simulation_Project
             {
                 if (currentProc == null)
                     currentProc = readyQ.ElementAt(i).Value;
-                if (time >= currentProc.CPUarrivalTime)
+                if (time >= currentProc.arrivalTime)
                 {
                     currentProc.remainingCPUTime -= 1;              // run the process for one unit of time
                     time += 1;                                      // add 1 unit of time to systemTime
@@ -208,8 +215,8 @@ namespace OS_Simulation_Project
 
                     if (currentProc.remainingCPUTime == 0)
                     {
-                        currentProc.CPUturnaround = time - currentProc.CPUarrivalTime;          // set turnaround time to systemTime - arrivalTime
-                        currentProc.CPUwait = currentProc.CPUturnaround - currentProc.expectedCPUTime;
+                        currentProc.turnaround = time - currentProc.arrivalTime;          // set turnaround time to systemTime - arrivalTime
+                        currentProc.wait = currentProc.turnaround - currentProc.expectedCPUTime;
                         currentProc.processState = false;
                         // run I/O burst
                         I_O_Algorithm(readyQ.ElementAt(i), ref time);
