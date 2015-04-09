@@ -24,6 +24,8 @@ namespace OS_Simulation_Project
         
         public string name;
 
+        public int queueCounter;                            // counts how many queues process has been through
+
         public PCB(int arrivalTime, bool state, List<int> CPU, List<int> IO)
         {
             // CPU total time is sum of individual burst times
@@ -45,6 +47,8 @@ namespace OS_Simulation_Project
             this.arrivalTime = arrivalTime;
             this.wait = 0;
             this.name = "Process " + arrivalTime.ToString();
+
+            this.queueCounter = 0;
         }
 
         public override string ToString()
@@ -52,6 +56,7 @@ namespace OS_Simulation_Project
             return name + "'s Stats\n" +
                 "Expected CPU Time: " + expectedCPUTime.ToString() +
                 "\nExpected IO Time: " + expectedIOTime.ToString() +
+                "\nTotal IO & CPU Service Time: " + (expectedCPUTime+expectedIOTime).ToString() +
                 "\nArrival Time: " + arrivalTime.ToString() +
                 "\nProcess State: " + processState.ToString() +
                 "\nResponse: " + response.ToString() +

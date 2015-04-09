@@ -15,7 +15,8 @@ namespace OS_Simulation_Project
         bool executing = true;
         List<Dictionary<int, PCB>> queueElement;
         int finished = 0;
-        public void MultiProcRoundRobin(Dictionary<int, PCB> procs, Queue<KeyValuePair<int, PCB>> rq, UniprocessorAlgorithms u, int quantum, int time, int procNum)
+
+        public void MultiProcRoundRobin(Dictionary<int, PCB> procs, Dictionary<int, PCB> rq, UniprocessorAlgorithms u, int quantum, ref int time, int procNum)
         {
             int i = 0;
             queueElement[wesley] = new Dictionary<int,PCB>();
@@ -26,11 +27,11 @@ namespace OS_Simulation_Project
                 {
                     if (Processors.Count() < procNum)
                     {
-                        tiList.Add(new ThreadInheriter(rq.Peek().Key));
-                        Processors.Add(tiList[i].t = new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
+                        tiList.Add(new ThreadInheriter(rq.First().Key));
+                        Processors.Add(tiList[i].t = new Thread(() => u.Round_Robin(quantum, rq.First(), ref time)));
                         Processors.ElementAt(i).Start();
                         //rq.Peek().Value.queueCount++;
-                        queueElement[/*rq.Peek.Value.queueCount - 1*/].Add(rq.Peek().Key, rq.Dequeue().Value);
+                        queueElement[/*rq.Peek.Value.queueCount - 1*/].Add(rq.First().Key, rq.Remove(0));
                         i++;
                     }
                     else
