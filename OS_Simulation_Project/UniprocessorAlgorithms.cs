@@ -9,140 +9,101 @@ namespace OS_Simulation_Project
 {
     class UniprocessorAlgorithms
     {
-        ///// <summary>
-        ///// Preemptive (?)
-        ///// Runs each process for the specified time quantum and then switches to the next arrived process
-        ///// </summary>
-        ///// <param name="quantum"> time allocated to each process per RR cycle </param>
-        ///// <param name="ReadyQueue"> list of processes to be run </param>
-        //public void Round_Robin(int quantum, Dictionary<int, PCB> ReadyQueue)
-        //{
-        //    PCB currentProc;
-        //    Dictionary<int, PCB> CompletedProcs = new Dictionary<int, PCB>();
-        //    int counter = 0;
-        //    do
-        //    {
-        //        // find the earliest arriving process 
-        //        if (counter < ReadyQueue.Count())
-        //            currentProc = ReadyQueue.ElementAt(counter).Value;
-        //        else
-        //            currentProc = ReadyQueue.First().Value;                          // if the counter is bigger than the Queue, just get the first value
-
-        //        // set the processes response time to the systemTime - arrivalTime
-        //        if (currentProc.response == -1)
-        //        {
-        //            if (currentProc.arrivalTime <= systemTime)                      // make sure a new process has arrived
-        //                currentProc.response = systemTime - currentProc.arrivalTime;
-        //            else
-        //                // need to make sure this counts as CPU idle time when the system has to wait for a process to arrive... or does it run previous process again?
-        //                systemTime += (currentProc.arrivalTime - systemTime);       // if no new process, update the system time to show that time has passed where the CPU was idle
-        //        }
-
-        //        // run that process for the quantum 
-        //        if (currentProc.remainingServiceTime >= quantum ) {                 // check to make sure quantum isn't bigger than remaining time
-        //            currentProc.remainingServiceTime -= quantum;                    // subtract quantum from remainingServiceTime
-        //            systemTime += quantum;                                          //  update system time 
-        //        }
-        //        else { 
-        //            systemTime += currentProc.remainingServiceTime;     // udate system time
-        //            currentProc.remainingServiceTime = 0;                           // zero out remainingServiceTime
-        //        }
-
-
-        //        // check to see if process has finished
-        //        if (currentProc.remainingServiceTime == 0)
-        //        {
-        //            currentProc.execution = systemTime;                                         // set execution time to current system time
-        //            currentProc.turnaround = systemTime - currentProc.arrivalTime;              // set turnaround time to systemTime - arrivalTime
-        //            currentProc.wait = currentProc.turnaround - currentProc.expectedServiceTime;                                           
-        //            // write stat information to file and remove process from ReadyQueue & add to CompletedProcs
-        //            if (counter < ReadyQueue.Count())             // check if counter > # procs left
-        //            {
-        //                CompletedProcs.Add(ReadyQueue.ElementAt(counter).Key, ReadyQueue.ElementAt(counter).Value);         // add to completed procs
-        //                ReadyQueue.Remove(ReadyQueue.ElementAt(counter).Key);                                               // remove from readyQueue
-        //                counter--;                                                                                          // if a proc is removed, decrement the counter
-        //            }
-        //            else
-        //            {
-        //                CompletedProcs.Add(ReadyQueue.First().Key, ReadyQueue.First().Value);                    // add to completed procs
-        //                ReadyQueue.Remove(ReadyQueue.First().Key);                                               // remove from readyQueue
-        //                counter--;                                                                               // if a proc is removed, decrement the counter
-        //            }
-
-        //        }
-
-        //        counter++;                                                          // update the counter variable to get the next key/value pair
-
-        //    } while (ReadyQueue.Count() != 0);
-
-        //    for (int i = 0; i < CompletedProcs.Count(); i++)
-        //        Console.WriteLine(CompletedProcs.ElementAt(i).Value.ToString() + "\n");
-
-        //    Console.WriteLine("Round Robin Complete\n");
-        //}
-
         /// <summary>
-        /// Preemptive
-        /// Runs for time quantum and then passes it along
+        /// 
         /// </summary>
-        /// <param name="quantum"></param>
-        /// <param name="currentProc"></param>
-        /// <param name="time"></param>
-       
-        // do we need to pass it the Key/Value Pair or can we just give it a PCB?
-        // need to add/remove prcs from CPU & IO Queues from here when necessary...
-        public void Round_Robin(int quantum, KeyValuePair<int, PCB> currentProc, ref int time)
+        /// <param name="quantum"> time to run</param>
+        /// <param name="currentProc">process being run through </param>
+        /// <param name="time">current system time at start</param>
+        /// <param name="CPU_ready_Q">reference to CPU ready Q in Program.cs (can be null for Multiprocessor Sim)</param>
+        /// <param name="IO_Ready_Q">reference to IO ready Q in Program.cs (can be null for Multiprocessor Sim)</param>
+        /// <param name="COMPLETED_PROCS">Dictionary of completed procs from Program.cs (can be null for Multiprocessor Sim)</param>
+        public void Round_Robin(int quantum, KeyValuePair<int, PCB> currentProc, ref int time,
+            ref Dictionary<int, PCB> CPU_ready_Q, ref Dictionary<int, PCB> IO_Ready_Q,
+            ref Dictionary<int, PCB> COMPLETED_PROCS)
         {
+            // make sure process has arrived at current system time
             if (time >= currentProc.Value.arrivalTime)
             {
                 // calculate the response time for the current process
                 if (currentProc.Value.response == -1)
-                {
                     currentProc.Value.response = time - currentProc.Value.arrivalTime;
-                }
 
-                // run that process for the quantum 
-                if (currentProc.Value.remainingCPUTime >= quantum)                    // check to make sure quantum isn't bigger than remaining time
+                /************ run that process for the quantum *************/
+                // check to make sure quantum isn't bigger than remaining time
+                if (currentProc.Value.remainingCPUTime >= quantum)                    
                 {
-                    currentProc.Value.remainingCPUTime -= quantum;                    // subtract quantum from remainingServiceTime
+                    // subtract quantum from remainingServiceTime
+                    currentProc.Value.remainingCPUTime -= quantum; 
+                    // update time to account for quantum
                     time += quantum;
                 }
                 else
                 {
-                    time += currentProc.Value.remainingCPUTime;                       // udate system Time
-                    currentProc.Value.remainingCPUTime = 0;                           // zero out remainingServiceTime
+                    // update system time
+                    time += currentProc.Value.remainingCPUTime;
+                    // zero out remainingServiceTime
+                    currentProc.Value.remainingCPUTime = 0;                           
                 }
 
-                // check if process finished and update stats accordingly; will pass to appropriate queues in Simulation.cs
+                /**********checking if process has finished**********/
+                // check if current burst has finished
                 if (currentProc.Value.remainingCPUTime == 0)
                 {
-                    // remove from readyQ
-
                     // remove CPU burst that just completed
                     currentProc.Value.CPU_bursts.RemoveAt(0);
 
-                    // check to see if CPU burst queue is empty...
-                    if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
+                    // remove from readyQ
+                    CPU_ready_Q.Remove(currentProc.Key);
+
+                    // if a CPU burst remains, then an IO burst must also remain
+                    if (currentProc.Value.CPU_bursts.Count() != 0)
                     {
-                        currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);        // turnaround is current system time - arrival time
-                        currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
-                        currentProc.Value.wait = (currentProc.Value.turnaround - (currentProc.Value.expectedIOTime + currentProc.Value.expectedCPUTime));      // wait = turnaround - expSerTime
-                    }
-                    else
                         // if still CPU bursts to run, set remainingCPUTime to next burst
                         currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
-                    //add to back of readyQ to be run through again
-                    time += 2; // context switch
-                    // run I/O burst
-                    I_O_Algorithm(currentProc.Value, ref time);
+                        // add it to IO Queue to run IO burst
+                        IO_Ready_Q.Add(currentProc.Key, currentProc.Value);
+
+                        // run IO Algorithm with first element because there should only be one element at a time
+                        I_O_Algorithm(IO_Ready_Q.ElementAt(0), ref time, ref IO_Ready_Q, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                    }
+                    // no CPU bursts remain, but an IO burst is left...
+                    else if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() != 0)
+                    {
+                        // add it to IO Queue to run IO burst
+                        IO_Ready_Q.Add(currentProc.Key, currentProc.Value);
+                        // run IO Algorithm with first element because there should only be one element at a time
+                        I_O_Algorithm(IO_Ready_Q.ElementAt(0), ref time, ref IO_Ready_Q, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                    }
+                    // no CPU or IO bursts are left, process is all done
+                    else if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
+                    {
+                        // turnaround is current system time - arrival time
+                        currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);
+                        // wait = turnaround - expSerTime
+                        currentProc.Value.wait = (currentProc.Value.turnaround - (currentProc.Value.expectedIOTime + currentProc.Value.expectedCPUTime));     
+                        // add to COMPLETED_PROCS to be output in main
+                        COMPLETED_PROCS.Add(currentProc.Key, currentProc.Value);
+                    }
                 }
+                // if current CPU burst is not yet complete...
+                else
+                    //add to back of readyQ to be run through again--- when adding to dictionary, where does it add?
+                    CPU_ready_Q.Add(currentProc.Key, currentProc.Value);
+                // context switch
+                time += 2; 
             }
+
             else
             {
+                // update time to jump to point where process arrives
                 time = currentProc.Value.arrivalTime;
-                Round_Robin(quantum, currentProc, ref time);
+                // recursively re-run process through RR
+                Round_Robin(quantum, currentProc, ref time, ref CPU_ready_Q, ref IO_Ready_Q, ref COMPLETED_PROCS);
             }
         }
+
+
 
         /// <summary>
         /// Non-preemptive
@@ -163,7 +124,7 @@ namespace OS_Simulation_Project
                 if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
                 {
                     currentProc.Value.turnaround = time - currentProc.Value.arrivalTime;                      // set turnaround time to systemTime - arrivalTime
-                    currentProc.Value.wait = currentProc.Value.turnaround - (currentProc.Value.expectedCPUTime+currentProc.Value.expectedIOTime); //CPU wait is turnaround - expected service time
+                    currentProc.Value.wait = currentProc.Value.turnaround - (currentProc.Value.expectedCPUTime + currentProc.Value.expectedIOTime); //CPU wait is turnaround - expected service time
                     currentProc.Value.processState = false;
                     time += 2; // context switch
                     // run I/O burst
@@ -179,16 +140,43 @@ namespace OS_Simulation_Project
 
         // how do we accrue wait time in IO queue...
         //process state must be false to get into IO Queue, when it leaves, it switches to true
-        public void I_O_Algorithm(PCB currProc, ref int time)
+        public void I_O_Algorithm(KeyValuePair<int, PCB> currProc, ref int time,
+            ref Dictionary<int, PCB> IO_Queue, ref Dictionary<int, PCB> CPU_Queue, 
+            ref Dictionary<int, PCB> COMPLETED_PROCS)
         {
             // add IO burst time to systemTime
-            time += currProc.remainingIOTime;
-            currProc.remainingIOTime = 0;
-            currProc.processState = true;
-            time += 2; // context switch
+            time += currProc.Value.remainingIOTime;
+            // finish current IO burst
+            currProc.Value.remainingIOTime = 0;
             // remove from IO queue
-            // update the burst
+            IO_Queue.Remove(currProc.Key);
+            // remove completed burst
+            currProc.Value.IO_bursts.Remove(0);
+            // check if IO bursts all completed; if an IO burst remains, then a CPU burst also remains
+            if (currProc.Value.IO_bursts.Count() != 0)
+            {
+                // update the burst to next IO burst
+                currProc.Value.remainingIOTime = currProc.Value.IO_bursts.ElementAt(0);
+                // add back to CPU_ready_Queue
+                CPU_Queue.Add(currProc.Key, currProc.Value);
+                // remove from IO Queue
+                IO_Queue.Remove(currProc.Key);
+                // run CPU again??
+            }
+            // if IO bursts are done, but a CPU burst remains
+            else if (currProc.Value.IO_bursts.Count() == 0 && currProc.Value.CPU_bursts.Count() != 0)
+            {
+
+            }
+            // if no IO or CPU bursts remain then process is done
+            else if (currProc.Value.IO_bursts.Count() == 0 && currProc.Value.CPU_bursts.Count() == 0)
+            {
+
+            }
+            
             // add back to CPU ready queue
+            // context switch
+            time += 2; 
         }
 
         /// <summary>
@@ -197,7 +185,7 @@ namespace OS_Simulation_Project
         /// Will interrupt the current process if another process has a shorter remaining time 
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
-        public void Shortest_Remaining_Time(Dictionary<int,PCB> readyQ, ref int time)
+        public void Shortest_Remaining_Time(Dictionary<int, PCB> readyQ, ref int time)
         {
             PCB currentProc = null;
             for (int i = 0; i < readyQ.Count(); i++)
