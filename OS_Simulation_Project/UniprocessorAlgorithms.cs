@@ -126,7 +126,7 @@ namespace OS_Simulation_Project
                     {
                         currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);        // turnaround is current system time - arrival time
                         currentProc.Value.processState = false;     // set state to false so it can go into IO Queue
-                        currentProc.Value.wait = (currentProc.Value.turnaround - currentProc.Value.expectedCPUTime);      // wait = turnaround - expSerTime
+                        currentProc.Value.wait = (currentProc.Value.turnaround - (currentProc.Value.expectedIOTime + currentProc.Value.expectedCPUTime));      // wait = turnaround - expSerTime
                     }
                     else
                         // if still CPU bursts to run, set remainingCPUTime to next burst
@@ -142,7 +142,6 @@ namespace OS_Simulation_Project
                 time = currentProc.Value.arrivalTime;
                 Round_Robin(quantum, currentProc, ref time);
             }
-
         }
 
         /// <summary>
@@ -161,10 +160,10 @@ namespace OS_Simulation_Project
                 // remove current burst
                 currentProc.Value.CPU_bursts.RemoveAt(0);
 
-                if (currentProc.Value.CPU_bursts.Count() == 0)
+                if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
                 {
                     currentProc.Value.turnaround = time - currentProc.Value.arrivalTime;                      // set turnaround time to systemTime - arrivalTime
-                    currentProc.Value.wait = currentProc.Value.turnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
+                    currentProc.Value.wait = currentProc.Value.turnaround - (currentProc.Value.expectedCPUTime+currentProc.Value.expectedIOTime); //CPU wait is turnaround - expected service time
                     currentProc.Value.processState = false;
                     time += 2; // context switch
                     // run I/O burst
@@ -187,7 +186,9 @@ namespace OS_Simulation_Project
             currProc.remainingIOTime = 0;
             currProc.processState = true;
             time += 2; // context switch
-
+            // remove from IO queue
+            // update the burst
+            // add back to CPU ready queue
         }
 
         /// <summary>
@@ -196,13 +197,13 @@ namespace OS_Simulation_Project
         /// Will interrupt the current process if another process has a shorter remaining time 
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
-        public void Shortest_Remaining_Time(Queue<PCB> readyQ, ref int time)
+        public void Shortest_Remaining_Time(Dictionary<int,PCB> readyQ, ref int time)
         {
             PCB currentProc = null;
             for (int i = 0; i < readyQ.Count(); i++)
             {
                 if (currentProc == null)
-                    currentProc = readyQ.ElementAt(i);
+                    currentProc = readyQ.ElementAt(i).Value;
                 if (time >= currentProc.arrivalTime)
                 {
                     currentProc.remainingCPUTime -= 1;              // run the process for one unit of time
@@ -211,8 +212,8 @@ namespace OS_Simulation_Project
                     // check if a shorter process is out there...
                     for (int j = 1; j < readyQ.Count(); j++)
                     {
-                        if (currentProc.remainingCPUTime > readyQ.ElementAt(j).remainingCPUTime)
-                            currentProc = readyQ.ElementAt(j);
+                        if (currentProc.remainingCPUTime > readyQ.ElementAt(j).Value.remainingCPUTime)
+                            currentProc = readyQ.ElementAt(j).Value;
                         else
                             i--;
                     }
@@ -224,7 +225,7 @@ namespace OS_Simulation_Project
                         currentProc.processState = false;
                         time += 2; // context switch
                         // run I/O burst
-                        I_O_Algorithm(readyQ.ElementAt(i), ref time);
+                        I_O_Algorithm(readyQ.ElementAt(i).Value, ref time);
                     }
                 }
             }
