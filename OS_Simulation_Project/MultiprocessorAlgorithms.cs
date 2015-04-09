@@ -14,10 +14,9 @@ namespace OS_Simulation_Project
         List<ThreadInheriter> tiList;
         bool executing = true;
         List<Dictionary<int, PCB>> queueElement;
-        int finished = 0; 
+        int finished = 0;
         public void MultiProcRoundRobin(Dictionary<int, PCB> procs, Queue<KeyValuePair<int, PCB>> rq, UniprocessorAlgorithms u, int quantum, int time, int procNum)
         {
-            wesley++; // DEFINITELY IN THE WRONG PLACE
             int i = 0;
             queueElement[wesley] = new Dictionary<int,PCB>();
 
@@ -28,10 +27,10 @@ namespace OS_Simulation_Project
                     if (Processors.Count() < procNum)
                     {
                         tiList.Add(new ThreadInheriter(rq.Peek().Key));
-
                         Processors.Add(tiList[i].t = new Thread(() => u.Round_Robin(quantum, rq.Peek(), ref time)));
                         Processors.ElementAt(i).Start();
-                        queueElement[wesley].Add(rq.Peek().Key, rq.Dequeue().Value);
+                        //rq.Peek().Value.queueCount++;
+                        queueElement[/*rq.Peek.Value.queueCount - 1*/].Add(rq.Peek().Key, rq.Dequeue().Value);
                         i++;
                     }
                     else
@@ -49,9 +48,9 @@ namespace OS_Simulation_Project
                                             {
                                                 queueList[wesley].Enqueue(queueElement[wesley].ElementAt(k));
                                                 queueElement[wesley].Remove(tiList[j].processID);
-                                                if (wesley < 3)
-                                                    Processors.Add(new Thread(() => MultiProcRoundRobin(procs, queueList[wesley], u, quantum + 3, time, procNum))); // NEED TO UPDATE WIHOUT CALLING ENTIRE FUNCTION
-                                                else
+                                                if (//queueCount == 1)
+                                                    Processors.Add(new Thread(() => MultiProcRoundRobin(procs, queueList[wesley], u, quantum + 3, time, procNum)));
+                                                else if (//queueCount == 2)
                                                     Processors.Add(new Thread(() => MultiProcFCFS(procs, queueList[wesley], u, time, procNum)));
                                             }
                                     }

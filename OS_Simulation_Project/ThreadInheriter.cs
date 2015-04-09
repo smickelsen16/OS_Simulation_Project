@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace OS_Simulation_Project
 {
-    class ThreadInheriter : Thread
+    class ThreadInheriter// : Thread
     {
         public int processID;
         public Thread t;
