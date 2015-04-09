@@ -83,11 +83,14 @@ namespace OS_Simulation_Project
 
         /// <summary>
         /// Preemptive
-        /// Runs each process for the specified time quantum and then switches to the next arrived process
+        /// Runs for time quantum and then passes it along
         /// </summary>
-        /// <param name="quantum"> time allocated to each process per RR cycle </param>
-        /// <param name="ReadyQueue"> list of processes to be run </param>
-        /// 
+        /// <param name="quantum"></param>
+        /// <param name="currentProc"></param>
+        /// <param name="time"></param>
+       
+        // do we need to pass it the Key/Value Pair or can we just give it a PCB?
+        // need to add/remove prcs from CPU & IO Queues from here when necessary...
         public void Round_Robin(int quantum, KeyValuePair<int, PCB> currentProc, ref int time)
         {
             if (time >= currentProc.Value.arrivalTime)
@@ -129,9 +132,9 @@ namespace OS_Simulation_Project
                         // if still CPU bursts to run, set remainingCPUTime to next burst
                         currentProc.Value.remainingCPUTime = currentProc.Value.CPU_bursts.First();
                     //add to back of readyQ to be run through again
-
+                    time += 2; // context switch
                     // run I/O burst
-                    I_O_Algorithm(currentProc, ref time);
+                    I_O_Algorithm(currentProc.Value, ref time);
                 }
             }
             else
@@ -163,8 +166,9 @@ namespace OS_Simulation_Project
                     currentProc.Value.turnaround = time - currentProc.Value.arrivalTime;                      // set turnaround time to systemTime - arrivalTime
                     currentProc.Value.wait = currentProc.Value.turnaround - currentProc.Value.expectedCPUTime; //CPU wait is turnaround - expected service time
                     currentProc.Value.processState = false;
+                    time += 2; // context switch
                     // run I/O burst
-                    I_O_Algorithm(currentProc, ref time);
+                    I_O_Algorithm(currentProc.Value, ref time);
                 }
                 else
                 {
@@ -176,13 +180,13 @@ namespace OS_Simulation_Project
 
         // how do we accrue wait time in IO queue...
         //process state must be false to get into IO Queue, when it leaves, it switches to true
-        public void I_O_Algorithm(KeyValuePair<int, PCB> currProc, ref int time)
+        public void I_O_Algorithm(PCB currProc, ref int time)
         {
-            currProc.Value.IOarrivalTime = time;        // set the arrivalTime in IO Queue to current system time
             // add IO burst time to systemTime
-            time += currProc.Value.remainingIOTime;
-            currProc.Value.remainingIOTime = 0;
-            currProc.Value.processState = true;
+            time += currProc.remainingIOTime;
+            currProc.remainingIOTime = 0;
+            currProc.processState = true;
+            time += 2; // context switch
 
         }
 
@@ -192,13 +196,13 @@ namespace OS_Simulation_Project
         /// Will interrupt the current process if another process has a shorter remaining time 
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
-        public void Shortest_Remaining_Time(Dictionary<int, PCB> readyQ, ref int time)
+        public void Shortest_Remaining_Time(Queue<PCB> readyQ, ref int time)
         {
             PCB currentProc = null;
             for (int i = 0; i < readyQ.Count(); i++)
             {
                 if (currentProc == null)
-                    currentProc = readyQ.ElementAt(i).Value;
+                    currentProc = readyQ.ElementAt(i);
                 if (time >= currentProc.arrivalTime)
                 {
                     currentProc.remainingCPUTime -= 1;              // run the process for one unit of time
@@ -207,8 +211,8 @@ namespace OS_Simulation_Project
                     // check if a shorter process is out there...
                     for (int j = 1; j < readyQ.Count(); j++)
                     {
-                        if (currentProc.remainingCPUTime > readyQ.ElementAt(j).Value.remainingCPUTime)
-                            currentProc = readyQ.ElementAt(j).Value;
+                        if (currentProc.remainingCPUTime > readyQ.ElementAt(j).remainingCPUTime)
+                            currentProc = readyQ.ElementAt(j);
                         else
                             i--;
                     }
@@ -218,6 +222,7 @@ namespace OS_Simulation_Project
                         currentProc.turnaround = time - currentProc.arrivalTime;          // set turnaround time to systemTime - arrivalTime
                         currentProc.wait = currentProc.turnaround - currentProc.expectedCPUTime;
                         currentProc.processState = false;
+                        time += 2; // context switch
                         // run I/O burst
                         I_O_Algorithm(readyQ.ElementAt(i), ref time);
                     }

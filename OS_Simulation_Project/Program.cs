@@ -23,65 +23,100 @@ namespace OS_Simulation_Project
 
             UniprocessorAlgorithms uniSim = new UniprocessorAlgorithms();
 
+            // add all processes to CPU_ready_Q since they are added in ascending arrivalTime order
             for (int h = 0; h < processTable.Count(); h++)
                 CPU_ready_Q.Enqueue(processTable.ElementAt(h).Value);
             
-            // continuously run through the simulation until all are done
-            //do
-            //{
-            // if the system time is the processes arrival time, it is added to the ready queue
+            // going to have to separate this into multiple runs... CPU_ready_Q is changing each time through a queue and we need
+            // to make sure the queues start with the same processes
             for (int i = 0; i < processTable.Count(); i++)
             {
                 if (CPU_ready_Q.Count() != 0)
                 {
                     // Run through multiple queues... collect stat information and write to file at the end, 
-                    // do we need to use multithreading to run through all queues at the same time??
                     // 1st Queue
-                    for (int j = 0; j < processTable.Count(); j++)
+                    // RR q = 2
+                    // RR q = 4
+                    // RR q = 6
+                    // FCFS
+                    for (int j = 0; j < CPU_ready_Q.Count(); j++)
                     {
+                        // need to be able to access CPU/IO_ready_Q in the processes to add/remove processes from them...
                         KeyValuePair<int, PCB> currProc = processTable.ElementAt(j);
                         uniSim.Round_Robin(2, currProc, ref systemTime);
+                        systemTime += 2; // context switch
                         uniSim.Round_Robin(4, currProc, ref systemTime);
+                        systemTime += 2; // context switch
                         uniSim.Round_Robin(6, currProc, ref systemTime);
+                        systemTime += 2; // context switch
                         uniSim.First_Come_First_Served(currProc, ref systemTime);
-                        // need to get system time to update here as well, not just in the algorithm
+                        systemTime += 2; // context switch
                     }
+
+                    // write stats to file here
 
                     for (int p = 0; p < processTable.Count(); p++)
                     {
                         Console.WriteLine(processTable.ElementAt(p).Value.ToString() + "\n");
                     }
 
-                    //// 2nd Queue
-                    //for (int k = 0; k < processTable.Count(); k++)
-                    //{
-                    //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(k);
-                    //    uniSim.Round_Robin(6, currProc, ref systemTime);
-                    //    uniSim.Round_Robin(7, currProc, ref systemTime);
-                    //    uniSim.First_Come_First_Served(currProc, ref systemTime);
-                    //}
+                    // 2nd Queue
+                    // RR q = 6
+                    // RR q = 7
+                    // FCFS
+                    for (int k = 0; k < processTable.Count(); k++)
+                    {
+                        KeyValuePair<int, PCB> currProc = processTable.ElementAt(k);
+                        uniSim.Round_Robin(6, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                        uniSim.Round_Robin(7, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                        uniSim.First_Come_First_Served(currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                    }
 
-                    //// 3rd Queue
-                    //for (int l = 0; l < processTable.Count(); l++)
-                    //{
-                    //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(l);
-                    //    uniSim.Round_Robin(3, currProc, ref systemTime);
-                    //    uniSim.Round_Robin(5, currProc, ref systemTime);
-                    //    uniSim.Round_Robin(7, currProc, ref systemTime);
-                    //}
-                    //uniSim.Shortest_Remaining_Time(processTable, ref systemTime);
+                    // write stats to file here
 
-                    //// 4th Queue
-                    //for (int m = 0; m < processTable.Count(); m++)
-                    //{
-                    //    KeyValuePair<int, PCB> currProc = processTable.ElementAt(m);
-                    //    uniSim.Round_Robin(2, currProc, ref systemTime);
-                    //    uniSim.Round_Robin(6, currProc, ref systemTime);
-                    //}
-                    //uniSim.Shortest_Remaining_Time(processTable, ref systemTime);
+                    // 3rd Queue
+                    // RR q = 3
+                    // RR q = 5
+                    // RR q = 7
+                    // SRT
+                    for (int l = 0; l < processTable.Count(); l++)
+                    {
+                        KeyValuePair<int, PCB> currProc = processTable.ElementAt(l);
+                        uniSim.Round_Robin(3, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                        uniSim.Round_Robin(5, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                        uniSim.Round_Robin(7, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                    }
+                    // give SRT the Queue of procs that havent finished yet
+                    uniSim.Shortest_Remaining_Time(CPU_ready_Q, ref systemTime);
+                    systemTime += 2; // context switch
+
+                    // write stats to file here
+
+                    // 4th Queue
+                    // RR q = 2
+                    // RR q = 6
+                    // SRT
+                    for (int m = 0; m < processTable.Count(); m++)
+                    {
+                        KeyValuePair<int, PCB> currProc = processTable.ElementAt(m);
+                        uniSim.Round_Robin(2, currProc, ref systemTime);
+                        systemTime += 2; // context switch
+                        uniSim.Round_Robin(6, currProc, ref systemTime); 
+                        systemTime += 2; // context switch
+                    }
+                    // give SRT the Queue of procs that havent finished yet
+                    uniSim.Shortest_Remaining_Time(CPU_ready_Q, ref systemTime);
+                    systemTime += 2; // context switch
+
+                    // write stats to file here
                 }
             }
-            //} while (true);
         }
     }
 }

@@ -16,11 +16,11 @@ namespace OS_Simulation_Project
         public int remainingIOTime = 0;                     // remaining service time in IO Queue (of 1 burst)
         public bool processState;                           // true = CPU ready, false = IO ready
         public int response = 0;                            // time from request submission to first response
-        public int turnaround = 0;                       // time from submission to completion of process in CPU
+        public int turnaround = 0;                          // time from submission to completion of process in CPU
         
-        public int wait = 0;                             // time process spends in CPU ready queue
+        public int wait = 0;                                // time process spends in CPU ready queue
        
-        public int arrivalTime = 0;                      // time process arrives in CPU queue
+        public int arrivalTime = 0;                         // time process arrives in CPU queue
         
         public string name;
 
@@ -52,14 +52,11 @@ namespace OS_Simulation_Project
             return name + "'s Stats\n" +
                 "Expected CPU Time: " + expectedCPUTime.ToString() +
                 "\nExpected IO Time: " + expectedIOTime.ToString() +
-                "\nCPU Arrival Time: " + arrivalTime.ToString() +
-                "\nIO Arrival Time: " + IOarrivalTime.ToString() +
+                "\nArrival Time: " + arrivalTime.ToString() +
                 "\nProcess State: " + processState.ToString() +
                 "\nResponse: " + response.ToString() +
-                "\nCPU Turnaround: " + turnaround.ToString() +
-                "\nIO Turnaround: " + IOturnaround.ToString() +
-                "\nIO Wait: " + IOwait.ToString() +
-                "\nCPU Wait: " + wait.ToString();
+                "\nTurnaround: " + turnaround.ToString() +
+                "\nWait: " + wait.ToString();
         }
     }
 }
