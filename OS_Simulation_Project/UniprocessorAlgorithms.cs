@@ -50,6 +50,7 @@ namespace OS_Simulation_Project
                 // check if current burst has finished
                 if (currentProc.Value.remainingCPUTime == 0)
                 {
+                    // PROBLEM IS HERE!!!!
                     // remove CPU burst that just completed
                     currentProc.Value.CPU_bursts.RemoveAt(0);
 
@@ -81,19 +82,23 @@ namespace OS_Simulation_Project
                         // turnaround is current system time - arrival time
                         currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);
                         // wait = turnaround - expSerTime
-                        currentProc.Value.wait = (currentProc.Value.turnaround - (currentProc.Value.expectedIOTime + currentProc.Value.expectedCPUTime));     
+                        currentProc.Value.wait = (currentProc.Value.turnaround - (currentProc.Value.expectedIOTime + currentProc.Value.expectedCPUTime));
                         // add to COMPLETED_PROCS to be output in main
                         COMPLETED_PROCS.Add(currentProc.Key, currentProc.Value);
                     }
                 }
                 // if current CPU burst is not yet complete...
                 else
-                    //add to back of readyQ to be run through again--- when adding to dictionary, where does it add?
+                {
+                    // remove process...
+                    CPU_ready_Q.Remove(currentProc.Key);
+                    // ... and add to the end of the queue, but it adds in order...
                     CPU_ready_Q.Add(currentProc.Key, currentProc.Value);
+                }
                 // context switch
                 time += 2; 
             }
-
+            // if curent time is not equal to arrival time of process
             else
             {
                 // update time to jump to point where process arrives
@@ -128,7 +133,7 @@ namespace OS_Simulation_Project
                     currentProc.Value.processState = false;
                     time += 2; // context switch
                     // run I/O burst
-                    I_O_Algorithm(currentProc.Value, ref time);
+                    //I_O_Algorithm(currentProc.Value, ref time);
                 }
                 else
                 {
@@ -151,7 +156,7 @@ namespace OS_Simulation_Project
             // remove from IO queue
             IO_Queue.Remove(currProc.Key);
             // remove completed burst
-            currProc.Value.IO_bursts.Remove(0);
+            currProc.Value.IO_bursts.RemoveAt(0);
             // check if IO bursts all completed; if an IO burst remains, then a CPU burst also remains
             if (currProc.Value.IO_bursts.Count() != 0)
             {
@@ -213,7 +218,7 @@ namespace OS_Simulation_Project
                         currentProc.processState = false;
                         time += 2; // context switch
                         // run I/O burst
-                        I_O_Algorithm(readyQ.ElementAt(i).Value, ref time);
+                        //I_O_Algorithm(readyQ.ElementAt(i).Value, ref time);
                     }
                 }
             }

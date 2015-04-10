@@ -38,8 +38,8 @@ namespace OS_Simulation_Project
             CPU_bursts = CPU;
             IO_bursts = IO;
 
-            this.remainingIOTime = CPU_bursts.First();      // remaining time keeps track of the time of bursts
-            this.remainingCPUTime = IO_bursts.First();      
+            this.remainingIOTime = IO_bursts.First();      // remaining time keeps track of the time of bursts
+            this.remainingCPUTime = CPU_bursts.First();      
 
             this.processState = state;
             this.response = -1;
