@@ -37,8 +37,8 @@ namespace OS_Simulation_Project
 
             /*SOMEWHERE BETWEEN INITIALIZATION AND GOING THROUGH ALGORITHMS,
                     THE COUNT OF BOTH THESE GETS SET BACK TO 1...*/
-            CPU_bursts = CPU;
-            IO_bursts = IO;
+            this.CPU_bursts = CPU;
+            this.IO_bursts = IO;
 
             this.remainingIOTime = IO_bursts.First();      // remaining time keeps track of the time of bursts
             this.remainingCPUTime = CPU_bursts.First();      

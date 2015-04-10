@@ -16,23 +16,21 @@ namespace OS_Simulation_Project
         // Creates process table based on randomly generated text file
         public Dictionary<int, PCB> CreateProcessTable()
         {
-            List<int> CPU = new List<int>();
-            List<int> IO = new List<int>();
-
+            FileGenerate fg = new FileGenerate();
             Dictionary<int, PCB> processTable = new Dictionary<int, PCB>();
 
             // reading all processes, line by line into array of strings
             //string[] processes = System.IO.File.ReadAllLines(@"C:\Users\Wesley\Desktop\Mytext.txt");
-            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\OS_Simulation_Project\MyText2.txt");
-
+            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\OS_Simulation_Project\Mytext.txt");
+            
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 20; i++)
             {
                 // split one line by spaces and assign each character to an array element
                 string[] currentProc = processes[i].Split(' ');
 
-                CPU.Clear();
-                IO.Clear();
+                List<int> CPU = new List<int>();
+                List<int> IO = new List<int>();
 
                 for (int j = 2; j < currentProc.Count(); j++)
                 {
@@ -50,8 +48,6 @@ namespace OS_Simulation_Project
             }
             return processTable;
         }
-
-        //public int systemTime = 0;                          // keeps track of system time
 
         public int throughput, CPU_utilization = 0;         // stats for whole system
 
