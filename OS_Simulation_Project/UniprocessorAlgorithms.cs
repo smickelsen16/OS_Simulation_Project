@@ -31,10 +31,10 @@ namespace OS_Simulation_Project
 
                 /************ run that process for the quantum *************/
                 // check to make sure quantum isn't bigger than remaining time
-                if (currentProc.Value.remainingCPUTime >= quantum)                    
+                if (currentProc.Value.remainingCPUTime >= quantum)
                 {
                     // subtract quantum from remainingServiceTime
-                    currentProc.Value.remainingCPUTime -= quantum; 
+                    currentProc.Value.remainingCPUTime -= quantum;
                     // update time to account for quantum
                     time += quantum;
                 }
@@ -43,7 +43,7 @@ namespace OS_Simulation_Project
                     // update system time
                     time += currentProc.Value.remainingCPUTime;
                     // zero out remainingServiceTime
-                    currentProc.Value.remainingCPUTime = 0;                           
+                    currentProc.Value.remainingCPUTime = 0;
                 }
 
                 /**********checking if process has finished**********/
@@ -52,7 +52,8 @@ namespace OS_Simulation_Project
                 {
                     // PROBLEM IS HERE!!!!
                     // remove CPU burst that just completed
-                    currentProc.Value.CPU_bursts.RemoveAt(0);
+                    if (currentProc.Value.CPU_bursts.Count() != 0)
+                        currentProc.Value.CPU_bursts.RemoveAt(0);
 
                     // remove from readyQ
                     CPU_ready_Q.Remove(currentProc.Key);
@@ -79,6 +80,7 @@ namespace OS_Simulation_Project
                     // no CPU or IO bursts are left, process is all done
                     else if (currentProc.Value.CPU_bursts.Count() == 0 && currentProc.Value.IO_bursts.Count() == 0)
                     {
+                        /*STATS NOT BEING CALCULATED CORRECTLY... GETTING NEGATIVE WAIT*/
                         // turnaround is current system time - arrival time
                         currentProc.Value.turnaround = (time - currentProc.Value.arrivalTime);
                         // wait = turnaround - expSerTime
@@ -96,7 +98,7 @@ namespace OS_Simulation_Project
                     CPU_ready_Q.Add(currentProc.Key, currentProc.Value);
                 }
                 // context switch
-                time += 2; 
+                time += 2;
             }
             // if curent time is not equal to arrival time of process
             else
@@ -146,7 +148,7 @@ namespace OS_Simulation_Project
         // how do we accrue wait time in IO queue...
         //process state must be false to get into IO Queue, when it leaves, it switches to true
         public void I_O_Algorithm(KeyValuePair<int, PCB> currProc, ref int time,
-            ref Dictionary<int, PCB> IO_Queue, ref Dictionary<int, PCB> CPU_Queue, 
+            ref Dictionary<int, PCB> IO_Queue, ref Dictionary<int, PCB> CPU_Queue,
             ref Dictionary<int, PCB> COMPLETED_PROCS)
         {
             // add IO burst time to systemTime
@@ -178,10 +180,10 @@ namespace OS_Simulation_Project
             {
 
             }
-            
+
             // add back to CPU ready queue
             // context switch
-            time += 2; 
+            time += 2;
         }
 
         /// <summary>

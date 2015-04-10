@@ -35,6 +35,8 @@ namespace OS_Simulation_Project
             foreach (int j in IO)
                 this.expectedIOTime += j;
 
+            /*SOMEWHERE BETWEEN INITIALIZATION AND GOING THROUGH ALGORITHMS,
+                    THE COUNT OF BOTH THESE GETS SET BACK TO 1...*/
             CPU_bursts = CPU;
             IO_bursts = IO;
 
