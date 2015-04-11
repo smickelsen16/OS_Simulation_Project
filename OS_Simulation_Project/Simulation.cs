@@ -21,10 +21,10 @@ namespace OS_Simulation_Project
 
             // reading all processes, line by line into array of strings
             //string[] processes = System.IO.File.ReadAllLines(@"C:\Users\Wesley\Desktop\Mytext.txt");
-            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\OS_Simulation_Project\Mytext.txt");
+            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\Output.txt");
             
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < processes.Count(); i++)
             {
                 // split one line by spaces and assign each character to an array element
                 string[] currentProc = processes[i].Split(' ');
@@ -49,7 +49,6 @@ namespace OS_Simulation_Project
             return processTable;
         }
 
-        public int throughput, CPU_utilization = 0;         // stats for whole system
 
     }
 }

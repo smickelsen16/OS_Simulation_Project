@@ -12,17 +12,17 @@ namespace OS_Simulation_Project
 
         public void Start()
         {
-            string[] lines = new string[100];
-            int[] arrivalTime = new int[100];
+            string[] lines = new string[200];
+            int[] arrivalTime = new int[200];
             int filesToGen;
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 200; i++)
             {
-                filesToGen = rand.Next(1, 10);
+                filesToGen = rand.Next(2, 10);
                 lines[i] = Generate(filesToGen, i, ref arrivalTime);
             }
             //System.IO.File.WriteAllLines(@"C:\Users\James Bond\Documents\CS_Projects\OS_Sim_File_Generator\Mytext.txt", lines);
             //System.IO.File.WriteAllLines(@"/Users/TylerHarding/Documents/OS_Sim_Random_File/Mytext.txt", lines);
-            System.IO.File.WriteAllLines(@"C:\Users\smickelsen16\Desktop\COLLEGE FILES\Spring2015\CS475W OperatingSystems\Output.txt", lines);
+            System.IO.File.WriteAllLines(@"C:\Users\smickelsen16\Desktop\Output.txt", lines);
         }
 
         //Assuming that our process will always start off with a CPU burst
