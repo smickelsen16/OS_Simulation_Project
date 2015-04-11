@@ -41,14 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CPUQueue.cs" />
     <Compile Include="FileGenerate.cs" />
     <Compile Include="FileOutput.cs" />
-    <Compile Include="IOQueueAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MultiprocessorAlgorithms.cs" />
     <Compile Include="PCB.cs" />
-    <Compile Include="ThreadInheriter.cs" />
     <Compile Include="UniprocessorAlgorithms.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
