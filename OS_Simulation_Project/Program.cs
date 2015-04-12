@@ -77,6 +77,13 @@ namespace OS_Simulation_Project
 
             Console.WriteLine("Throughput for Queue 1: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+
+            // write stats to file here
+            for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
+            {
+                FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 1).response.ToString());
+                FO.WriteTo(6, COMPLETED_PROCS.Count(), "Average Response time");
+            }
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -90,13 +97,7 @@ namespace OS_Simulation_Project
             COMPLETED_PROCS.Clear();
             systemTime = 0;
 
-            // write stats to file here
-			for (int i = 1; i < COMPLETED_PROCS.Count (); i++) 
-			{
-				FO.WriteTo (6, i, COMPLETED_PROCS.Values.ElementAt (i - 1).response.ToString ());
-				FO.WriteTo (6, COMPLETED_PROCS.Count (), "Average Response time");
-			}
-
+            
             // 2nd Queue
             // RR q = 2
             // RR q = 4
