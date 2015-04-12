@@ -10,20 +10,11 @@ namespace OS_Simulation_Project
 {
     class FileOutput
     {
-        //public StringBuilder csv = new StringBuilder();
-        //public void doStuff(int PID, string pArrival)
-        //{
-        //    string newLine = string.Format("{0}, {1}{2}", PID, pArrival, Environment.NewLine);
-        //    csv.Append(newLine);
-        //    System.IO.File.WriteAllText(@"C:\Users\James Bond\Desktop\OutputCVS.cvs", csv.ToString());
-        //}
-
-
-
         public Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
         public Excel.Workbook xlWorkBook;
         public Excel.Worksheet xlWorkSheet;
         object misValue = System.Reflection.Missing.Value;
+
         public void CreateFile()
         {
             if (xlApp == null)
@@ -33,8 +24,11 @@ namespace OS_Simulation_Project
 
             xlWorkBook = xlApp.Workbooks.Add(misValue);
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlWorkSheet.Cells[1, 1] = "Some stuff"; //this goes row x column, EG. [5,1] would be row 5, column 1
-
+            xlWorkSheet.Cells[1, 1] = "Process ID"; //this goes row x column, EG. [5,1] would be row 5, column 1
+			xlWorkSheet.Cells[6,1] = "Queue 1";
+			xlWorkSheet.Cells[9,1] = "Queue 2";
+			xlWorkSheet.Cells[12,1] = "Queue 3";
+			xlWorkSheet.Cells[15,1] = "Queue 4";
             
         }
 

@@ -25,6 +25,9 @@ namespace OS_Simulation_Project
             fg.Start();
             Simulation s = new Simulation();
 
+			FileOutput FO = new FileOutput();
+			FO.CreateFile();
+
             Dictionary<int, PCB> processTable = s.CreateProcessTable();
 
             UniprocessorAlgorithms uniSim = new UniprocessorAlgorithms();
@@ -88,6 +91,11 @@ namespace OS_Simulation_Project
             systemTime = 0;
 
             // write stats to file here
+			for (int i = 1; i < COMPLETED_PROCS.Count (); i++) 
+			{
+				FO.WriteTo (6, i, COMPLETED_PROCS.Values.ElementAt (i - 1).response.ToString ());
+				FO.WriteTo (6, COMPLETED_PROCS.Count (), "Average Response time");
+			}
 
             // 2nd Queue
             // RR q = 2
@@ -232,9 +240,7 @@ namespace OS_Simulation_Project
 
             // write stats to file here
             //Creating new FileOutput object that contains an excel object
-            FileOutput FO = new FileOutput();
 
-            FO.CreateFile();
             for (int i = 1; i < 4; i++)
             {
                 for (int j = 1; j < 7; j++)
@@ -255,19 +261,6 @@ namespace OS_Simulation_Project
 
             FO.Finish();
 
-
-            //for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
-            //{
-            //    for (int j = 1; j < 7; j++)
-            //    {
-            //        FO.doStuff(COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString(), i, j);
-            //    }
-
-            //}
-
-
-
-            
         }
     }
 }
