@@ -207,8 +207,13 @@ namespace OS_Simulation_Project
             // write stats to file here
             //Creating new FileOutput object that contains an excel object
             FileOutput FO = new FileOutput();
-            
-            FO.doStuff(COMPLETED_PROCS.Values.ElementAt(1).turnaround.ToString());
+
+
+            for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
+            {
+                FO.doStuff(i, COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString());
+            }
+
 
 
             /*RUN MULTIPROCESSOR SIMULATION HERE*/
