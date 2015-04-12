@@ -208,11 +208,26 @@ namespace OS_Simulation_Project
             //Creating new FileOutput object that contains an excel object
             FileOutput FO = new FileOutput();
 
-
-            for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
+            FO.CreateFile();
+            for (int i = 1; i < 4; i++)
             {
-                FO.doStuff(i, COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString());
+                for (int j = 1; j < 7; j++)
+                {
+                    FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString());
+                }
             }
+                
+            FO.Finish();
+
+
+            //for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
+            //{
+            //    for (int j = 1; j < 7; j++)
+            //    {
+            //        FO.doStuff(COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString(), i, j);
+            //    }
+
+            //}
 
 
 
