@@ -10,7 +10,7 @@ namespace OS_Simulation_Project
 {
     class FileOutput
     {
-        public void doStuff()
+        public void doStuff(string n)
         {
             Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
             if (xlApp == null)
@@ -24,8 +24,12 @@ namespace OS_Simulation_Project
 
             xlWorkBook = xlApp.Workbooks.Add(misValue);
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlWorkSheet.Cells[1, 1] = "Sheet1 content";
+            xlWorkSheet.Cells[1, 1] = n;
 
+            
+            
+            
+            
             xlWorkBook.SaveAs("C:\\Users\\James Bond\\Documents\\GitHub\\OS_Simulation_Project\\ExcelSheet.xls",Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
@@ -52,8 +56,6 @@ namespace OS_Simulation_Project
             {
                 GC.Collect();
             }
-        }
-        
-        
+        }  
     }
 }
