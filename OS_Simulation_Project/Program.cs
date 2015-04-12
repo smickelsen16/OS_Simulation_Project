@@ -16,6 +16,8 @@ namespace OS_Simulation_Project
 
         static double throughput, CPU_utilization = 0;         // stats for whole system
 
+        static double totalCPUTime = 0;
+
 
         static void Main()
         {
@@ -60,9 +62,18 @@ namespace OS_Simulation_Project
             } while (CPU_ready_Q.Count() != 0);
 
 
-            throughput = COMPLETED_PROCS.Count() / systemTime;
+            // throughput is # processes per system time
+            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for Queue 1: " + throughput.ToString());
+            for (int i = 0; i < COMPLETED_PROCS.Count(); i++)
+                // add all CPU burst times of all processes together...
+                totalCPUTime += COMPLETED_PROCS.ElementAt(i).Value.expectedCPUTime;
+
+            // % time CPU was running (not including IO bursts)
+            CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            Console.WriteLine("Throughput for Queue 1: " + Math.Round((decimal)throughput, 5).ToString());
+            Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -109,9 +120,13 @@ namespace OS_Simulation_Project
             } while (CPU_ready_Q.Count() != 0);
 
 
-            throughput = COMPLETED_PROCS.Count() / systemTime;
+            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for Queue 2: " + throughput.ToString());
+            // % time CPU was running (not including IO bursts)
+            CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            Console.WriteLine("Throughput for Queue 2: " + Math.Round((decimal)throughput, 5).ToString());
+            Console.WriteLine("CPU Utilization for Queue 2: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -156,9 +171,13 @@ namespace OS_Simulation_Project
             } while (CPU_ready_Q.Count() != 0);
 
 
-            throughput = COMPLETED_PROCS.Count() / systemTime;
+            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for Queue 3: " + throughput.ToString());
+            // % time CPU was running (not including IO bursts)
+            CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            Console.WriteLine("Throughput for Queue 3: " + Math.Round((decimal)throughput, 5).ToString());
+            Console.WriteLine("CPU Utilization for Queue 3: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -196,13 +215,20 @@ namespace OS_Simulation_Project
                 uniSim.Shortest_Remaining_Time(ref CPU_ready_Q, ref systemTime, ref COMPLETED_PROCS);
             } while (CPU_ready_Q.Count() != 0);
 
-            throughput = COMPLETED_PROCS.Count() / systemTime;
+            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for Queue 4: " + throughput.ToString());
+            // % time CPU was running (not including IO bursts)
+            CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            Console.WriteLine("Throughput for Queue 4: " + Math.Round((decimal)throughput, 5).ToString());
+            Console.WriteLine("CPU Utilization for Queue 4: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////
+
+            /*RUN MULTIPROCESSOR SIMULATION HERE*/
+
 
             // write stats to file here
             //Creating new FileOutput object that contains an excel object
@@ -215,7 +241,7 @@ namespace OS_Simulation_Project
                 {
                     if (j == 1)
                     {
-                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i-1).arrivalTime.ToString());
+                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).arrivalTime.ToString());
                     }
                     else if (j == 2)
                     {
@@ -223,10 +249,10 @@ namespace OS_Simulation_Project
                     }
                     else
                         FO.WriteTo(i, j, "Hi");
-                    
+
                 }
             }
-                
+
             FO.Finish();
 
 
@@ -241,7 +267,7 @@ namespace OS_Simulation_Project
 
 
 
-            /*RUN MULTIPROCESSOR SIMULATION HERE*/
+            
         }
     }
 }

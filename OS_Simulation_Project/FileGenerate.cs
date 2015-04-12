@@ -22,8 +22,8 @@ namespace OS_Simulation_Project
             }
             //System.IO.File.WriteAllLines(@"C:\Users\James Bond\Documents\CS_Projects\OS_Sim_File_Generator\Mytext.txt", lines);
             //System.IO.File.WriteAllLines(@"/Users/TylerHarding/Documents/OS_Sim_Random_File/Mytext.txt", lines);
-            //System.IO.File.WriteAllLines(@"C:\Users\smickelsen16\Desktop\Output.txt", lines);
-            System.IO.File.WriteAllLines(@"C:\Users\James Bond\Desktop\Output.txt", lines);
+            System.IO.File.WriteAllLines(@"C:\Users\smickelsen16\Desktop\Output.txt", lines);
+            //System.IO.File.WriteAllLines(@"C:\Users\James Bond\Desktop\Output.txt", lines);
         }
 
         //Assuming that our process will always start off with a CPU burst

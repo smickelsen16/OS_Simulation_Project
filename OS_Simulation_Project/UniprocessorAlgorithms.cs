@@ -248,8 +248,6 @@ namespace OS_Simulation_Project
                     shortestProc.remainingCPUTime = shortestProc.CPU_bursts.First();
                     // run IO Algorithm 
                     I_O_Algorithm(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc), ref time, ref CPU_ready_Q, ref COMPLETED_PROCS);
-                    // run FCFS with n
-
                 }
 
                 // CPU bursts are done but one IO burst remains
