@@ -81,7 +81,7 @@ namespace OS_Simulation_Project
             // write stats to file here
             for (int i = 3; i < COMPLETED_PROCS.Count(); i++)
             {
-				FO.WriteTo (1, i, i - 3);
+				FO.WriteTo (1, i, (i - 3).ToString());
                 FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 3).response.ToString());
             }
 			FO.WriteTo(6, COMPLETED_PROCS.Count()+1, "Average Response time");
