@@ -213,7 +213,17 @@ namespace OS_Simulation_Project
             {
                 for (int j = 1; j < 7; j++)
                 {
-                    FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i).arrivalTime.ToString());
+                    if (j == 1)
+                    {
+                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i-1).arrivalTime.ToString());
+                    }
+                    else if (j == 2)
+                    {
+                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).turnaround.ToString());
+                    }
+                    else
+                        FO.WriteTo(i, j, "Hi");
+                    
                 }
             }
                 
