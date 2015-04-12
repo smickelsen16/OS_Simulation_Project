@@ -26,9 +26,27 @@ namespace OS_Simulation_Project
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             xlWorkSheet.Cells[1, 1] = "Process ID"; //this goes row x column, EG. [5,1] would be row 5, column 1
 			xlWorkSheet.Cells[6,1] = "Queue 1";
+			xlWorkSheet.Cells [6, 2] = "Response";
+			xlWorkSheet.Cells [7, 2] = "Turnaround";
+			xlWorkSheet.Cells [8, 2] = "Wait";
+
 			xlWorkSheet.Cells[9,1] = "Queue 2";
+			xlWorkSheet.Cells [9, 2] = "Response";
+			xlWorkSheet.Cells [10, 2] = "Turnaround";
+			xlWorkSheet.Cells [11, 2] = "Wait";
+
 			xlWorkSheet.Cells[12,1] = "Queue 3";
+			xlWorkSheet.Cells [12, 2] = "Response";
+			xlWorkSheet.Cells [13, 2] = "Turnaround";
+			xlWorkSheet.Cells [14, 2] = "Wait";
+
 			xlWorkSheet.Cells[15,1] = "Queue 4";
+			xlWorkSheet.Cells [15, 2] = "Response";
+			xlWorkSheet.Cells [16, 2] = "Turnaround";
+			xlWorkSheet.Cells [17, 2] = "Wait";
+
+
+
             
         }
 

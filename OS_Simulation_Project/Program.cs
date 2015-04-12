@@ -79,11 +79,14 @@ namespace OS_Simulation_Project
             Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
             // write stats to file here
-            for (int i = 1; i < COMPLETED_PROCS.Count(); i++)
+            for (int i = 3; i < COMPLETED_PROCS.Count(); i++)
             {
-                FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 1).response.ToString());
-                FO.WriteTo(6, COMPLETED_PROCS.Count(), "Average Response time");
+				FO.WriteTo (1, i, i - 3);
+                FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 3).response.ToString());
             }
+			FO.WriteTo(6, COMPLETED_PROCS.Count()+1, "Average Response time");
+
+
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -242,23 +245,23 @@ namespace OS_Simulation_Project
             // write stats to file here
             //Creating new FileOutput object that contains an excel object
 
-            for (int i = 1; i < 4; i++)
-            {
-                for (int j = 1; j < 7; j++)
-                {
-                    if (j == 1)
-                    {
-                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).arrivalTime.ToString());
-                    }
-                    else if (j == 2)
-                    {
-                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).turnaround.ToString());
-                    }
-                    else
-                        FO.WriteTo(i, j, "Hi");
-
-                }
-            }
+//            for (int i = 1; i < 4; i++)
+//            {
+//                for (int j = 1; j < 7; j++)
+//                {
+//                    if (j == 1)
+//                    {
+//                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).arrivalTime.ToString());
+//                    }
+//                    else if (j == 2)
+//                    {
+//                        FO.WriteTo(i, j, COMPLETED_PROCS.Values.ElementAt(i - 1).turnaround.ToString());
+//                    }
+//                    else
+//                        FO.WriteTo(i, j, "Hi");
+//
+//                }
+//            }
 
             FO.Finish();
 
