@@ -12,12 +12,12 @@ namespace OS_Simulation_Project
         bool executing = true;
         int finished = 0;
 
-        public void MultiProcRoundRobin(ref Dictionary<int, PCB> CPU_ready_Q, ref Dictionary<int, PCB> COMPLETED_PROCS,
+        public void MultiProcRoundRobin(ref Dictionary<int, PCB> CPU_ready_Q, ref SortedDictionary<int, PCB> COMPLETED_PROCS,
             UniprocessorAlgorithms u, int quantum, ref int time, int procNum)
         {
             int finishedCounterThing = CPU_ready_Q.Count();
             Dictionary<int, PCB> crq = CPU_ready_Q;
-            Dictionary<int, PCB> cp = COMPLETED_PROCS;
+            SortedDictionary<int, PCB> cp = COMPLETED_PROCS;
             int t = time;
 
             do
@@ -52,13 +52,13 @@ namespace OS_Simulation_Project
 
         }
 
-        public void MultiProcFCFS(ref Dictionary<int, PCB> CPU_ready_Q, ref Dictionary<int, PCB> COMPLETED_PROCS,
+        public void MultiProcFCFS(ref Dictionary<int, PCB> CPU_ready_Q, ref SortedDictionary<int, PCB> COMPLETED_PROCS,
             UniprocessorAlgorithms u, ref int time, int procNum)
         {
             int finishedCounterThing = CPU_ready_Q.Count();
             int t = time;
             Dictionary<int, PCB> crq = CPU_ready_Q;
-            Dictionary<int, PCB> cp = COMPLETED_PROCS;
+            SortedDictionary<int, PCB> cp = COMPLETED_PROCS;
             do
             {
                 if (Processors.Count() < procNum)

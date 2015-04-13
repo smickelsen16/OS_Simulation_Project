@@ -12,7 +12,9 @@ namespace OS_Simulation_Project
         static int systemTime = 0;
 
         static Dictionary<int, PCB> CPU_ready_Q = new Dictionary<int, PCB>();
-        static Dictionary<int, PCB> COMPLETED_PROCS = new Dictionary<int, PCB>();
+        static SortedDictionary<int, PCB> COMPLETED_PROCS = new SortedDictionary<int, PCB>();
+
+        
 
         static double throughput, CPU_utilization = 0;         // stats for whole system
 
@@ -78,22 +80,21 @@ namespace OS_Simulation_Project
             Console.WriteLine("Throughput for Queue 1: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
+            
+            
             // write stats to file here
-            for (int i = 3; i < COMPLETED_PROCS.Count(); i++)
+            for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
             {
-<<<<<<< HEAD
 				//Writeto function writes to cells in excel file, it takes 3 parameters
 				//The first parameter is the row, second is column, and third is what youre writing
-				FO.WriteTo (1, i, i - 3);
-				FO.WriteTo (2, i, COMPLETED_PROCS.Values.ElementAt (i - 3).arrivalTime.ToString ());
-				FO.WriteTo (3, i, COMPLETED_PROCS.Values.ElementAt (i - 3).expectedCPUTime.ToString ());
-				FO.WriteTo (4, i, COMPLETED_PROCS.Values.ElementAt (i - 3).expectedIOTime.ToString ());
-=======
 				FO.WriteTo (1, i, (i - 3).ToString());
->>>>>>> origin/master
-                FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 3).response.ToString());
-				FO.WriteTo (7, i, COMPLETED_PROCS.Values.ElementAt (i - 3).turnaround.ToString ());
-				FO.WriteTo (8, i, COMPLETED_PROCS.Values.ElementAt (i - 3).wait.ToString ());
+				FO.WriteTo (2, i, COMPLETED_PROCS.ElementAt (i - 3).Value.arrivalTime.ToString());
+				FO.WriteTo (3, i, COMPLETED_PROCS.ElementAt (i - 3).Value.expectedCPUTime.ToString());
+				FO.WriteTo (4, i, COMPLETED_PROCS.ElementAt (i - 3).Value.expectedIOTime.ToString());
+				FO.WriteTo (1, i, (i - 3).ToString());
+                FO.WriteTo(6, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
+				FO.WriteTo (7, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
+				FO.WriteTo (8, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
             }
 			FO.WriteTo(6, COMPLETED_PROCS.Count()+1, "Average Response time");
 			FO.WriteTo(7, COMPLETED_PROCS.Count()+1, "Average Turnaround time");
@@ -151,6 +152,7 @@ namespace OS_Simulation_Project
 
             Console.WriteLine("Throughput for Queue 2: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 2: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -202,6 +204,7 @@ namespace OS_Simulation_Project
 
             Console.WriteLine("Throughput for Queue 3: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 3: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -246,6 +249,7 @@ namespace OS_Simulation_Project
 
             Console.WriteLine("Throughput for Queue 4: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 4: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////

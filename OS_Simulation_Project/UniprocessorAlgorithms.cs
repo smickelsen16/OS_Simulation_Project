@@ -19,7 +19,7 @@ namespace OS_Simulation_Project
         /// <param name="IO_Ready_Q">reference to IO ready Q in Program.cs (can be null for Multiprocessor Sim)</param>
         /// <param name="COMPLETED_PROCS">Dictionary of completed procs from Program.cs (can be null for Multiprocessor Sim)</param>
         public void Round_Robin(int quantum, KeyValuePair<int, PCB> currentProc, ref int time,
-            ref Dictionary<int, PCB> CPU_ready_Q, ref Dictionary<int, PCB> COMPLETED_PROCS)
+            ref Dictionary<int, PCB> CPU_ready_Q, ref SortedDictionary<int, PCB> COMPLETED_PROCS)
         {
             // make sure process has arrived at current system time
             if (time >= currentProc.Value.arrivalTime)
@@ -104,7 +104,7 @@ namespace OS_Simulation_Project
         /// </summary>
         /// <param name="ReadyQueue"> list of processes to be run </param>
         public void First_Come_First_Served(KeyValuePair<int, PCB> currentProc, ref int time,
-            ref Dictionary<int, PCB> CPU_ready_Q, ref Dictionary<int, PCB> COMPLETED_PROCS)
+            ref Dictionary<int, PCB> CPU_ready_Q, ref SortedDictionary<int, PCB> COMPLETED_PROCS)
         {
             if (time >= currentProc.Value.arrivalTime)
             {
@@ -164,7 +164,7 @@ namespace OS_Simulation_Project
         // how do we accrue wait time in IO queue...
         //process state must be false to get into IO Queue, when it leaves, it switches to true
         public void I_O_Algorithm(KeyValuePair<int, PCB> currProc, ref int time,
-            ref Dictionary<int, PCB> CPU_Queue, ref Dictionary<int, PCB> COMPLETED_PROCS)
+            ref Dictionary<int, PCB> CPU_Queue, ref SortedDictionary<int, PCB> COMPLETED_PROCS)
         {
             // add IO burst time to systemTime
             time += currProc.Value.remainingIOTime;
@@ -211,7 +211,7 @@ namespace OS_Simulation_Project
         /// </summary>
         /// <param name="processes"> list of processes to be run </param>
         public void Shortest_Remaining_Time(ref Dictionary<int, PCB> CPU_ready_Q, ref int time,
-             ref Dictionary<int, PCB> COMPLETED_PROCS)
+             ref SortedDictionary<int, PCB> COMPLETED_PROCS)
         {
             // set shortestProc to first process to start
             PCB shortestProc = CPU_ready_Q.ElementAt(0).Value;
