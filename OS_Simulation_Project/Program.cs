@@ -14,11 +14,9 @@ namespace OS_Simulation_Project
         static Dictionary<int, PCB> CPU_ready_Q = new Dictionary<int, PCB>();
         static SortedDictionary<int, PCB> COMPLETED_PROCS = new SortedDictionary<int, PCB>();
 
-        
+        static double throughput, CPU_utilization, averageWait, averageResponse, averageTurnaround = 0;
 
-        static double throughput, CPU_utilization = 0;         // stats for whole system
-
-        static double totalCPUTime = 0;
+        static double totalCPUTime, totalWaitTime, totalTurnaroundTime, totalResponse = 0;
 
 
         static void Main()
@@ -42,20 +40,20 @@ namespace OS_Simulation_Project
                 CPU_ready_Q.Add(processTable.ElementAt(h).Key, processTable.ElementAt(h).Value);
 
             // 1st Queue
-            // RR q = 6
-            // RR q = 7
+            // RR q = 8
+            // RR q = 12
             // FCFS
             /////////////////////////////////////////////////////////////////
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 // BURSTS ARE OKAY HERE //
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(6, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(8, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(7, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(12, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
 
             do
@@ -71,18 +69,30 @@ namespace OS_Simulation_Project
             // throughput is # processes per system time
             throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            for (int i = 0; i < COMPLETED_PROCS.Count(); i++)
+            for (int i = 0; i < COMPLETED_PROCS.Count(); i++) {
                 // add all CPU burst times of all processes together...
                 totalCPUTime += COMPLETED_PROCS.ElementAt(i).Value.expectedCPUTime;
+                totalResponse += COMPLETED_PROCS.ElementAt(i).Value.response;
+                totalTurnaroundTime += COMPLETED_PROCS.ElementAt(i).Value.turnaround;
+                totalWaitTime += COMPLETED_PROCS.ElementAt(i).Value.wait;
+            }
 
             // % time CPU was running (not including IO bursts)
             CPU_utilization = (totalCPUTime / systemTime) * 100;
 
+            averageWait = totalWaitTime / COMPLETED_PROCS.Count();
+            averageResponse = totalResponse / COMPLETED_PROCS.Count();
+            averageTurnaround = totalTurnaroundTime / COMPLETED_PROCS.Count();
+
+            FO.WriteTo(21, 2, Math.Round((decimal)averageResponse, 3).ToString());
+            FO.WriteTo(21, 3, Math.Round((decimal)averageTurnaround, 3).ToString());
+            FO.WriteTo(21, 4, Math.Round((decimal)averageWait, 3).ToString());
+            FO.WriteTo(21, 5, Math.Round((decimal)CPU_utilization, 3).ToString());
+            FO.WriteTo(21, 6, Math.Round((decimal)throughput, 5).ToString());
+
             Console.WriteLine("Throughput for Queue 1: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
-            // calculate average stats
-            // FO2.WriteTo(row, column, value(string));
             
             // write stats to file here
             for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
@@ -97,31 +107,6 @@ namespace OS_Simulation_Project
 				FO.WriteTo (7, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
 				FO.WriteTo (8, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
             }
-
-			//writing to the end of the excel file where we will display the values below
-			FO.WriteTo(6, COMPLETED_PROCS.Count()+4, "Average Response time");
-			FO.WriteTo(7, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
-			FO.WriteTo(8, COMPLETED_PROCS.Count()+4, "Average Wait time");
-			FO.WriteTo(6, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
-			FO.WriteTo(7, COMPLETED_PROCS.Count()+6, "Throughput");
-
-			FO.WriteTo(9, COMPLETED_PROCS.Count()+4, "Average Response time");
-			FO.WriteTo(10, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
-			FO.WriteTo(11, COMPLETED_PROCS.Count()+4, "Average Wait time");
-			FO.WriteTo(9, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
-			FO.WriteTo(10, COMPLETED_PROCS.Count()+6, "Throughput");
-
-			FO.WriteTo(12, COMPLETED_PROCS.Count()+4, "Average Response time");
-			FO.WriteTo(13, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
-			FO.WriteTo(14, COMPLETED_PROCS.Count()+4, "Average Wait time");
-			FO.WriteTo(12, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
-			FO.WriteTo(13, COMPLETED_PROCS.Count()+6, "Throughput");
-
-			FO.WriteTo(15, COMPLETED_PROCS.Count()+4, "Average Response time");
-			FO.WriteTo(16, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
-			FO.WriteTo(17, COMPLETED_PROCS.Count()+4, "Average Wait time");
-			FO.WriteTo(15, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
-			FO.WriteTo(16, COMPLETED_PROCS.Count()+6, "Throughput");
 
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -138,25 +123,25 @@ namespace OS_Simulation_Project
 
             
             // 2nd Queue
-            // RR q = 2
-            // RR q = 4
-            // RR q = 6
+            // RR q = 1
+            // RR q = 3
+            // RR q = 8
             // FCFS
             ////////////////////////////////////////////////////////////////
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(2, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(1, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(4, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(3, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(6, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(8, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             do
             {
@@ -167,12 +152,35 @@ namespace OS_Simulation_Project
                 }
             } while (CPU_ready_Q.Count() != 0);
 
+            totalCPUTime = 0;
+            totalResponse = 0;
+            totalTurnaroundTime = 0;
+            totalWaitTime = 0;
+
+            for (int i = 0; i < COMPLETED_PROCS.Count(); i++)
+            {
+                // add all CPU burst times of all processes together...
+                totalCPUTime += COMPLETED_PROCS.ElementAt(i).Value.expectedCPUTime;
+                totalResponse += COMPLETED_PROCS.ElementAt(i).Value.response;
+                totalTurnaroundTime += COMPLETED_PROCS.ElementAt(i).Value.turnaround;
+                totalWaitTime += COMPLETED_PROCS.ElementAt(i).Value.wait;
+            }
 
             throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
             // % time CPU was running (not including IO bursts)
             CPU_utilization = (totalCPUTime / systemTime) * 100;
 
+            averageWait = totalWaitTime / COMPLETED_PROCS.Count();
+            averageResponse = totalResponse / COMPLETED_PROCS.Count();
+            averageTurnaround = totalTurnaroundTime / COMPLETED_PROCS.Count();
+
+            FO.WriteTo(22, 2, Math.Round((decimal)averageResponse, 3).ToString());
+            FO.WriteTo(22, 3, Math.Round((decimal)averageTurnaround, 3).ToString());
+            FO.WriteTo(22, 4, Math.Round((decimal)averageWait, 3).ToString());
+            FO.WriteTo(22, 5, Math.Round((decimal)CPU_utilization, 3).ToString());
+            FO.WriteTo(22, 6, Math.Round((decimal)throughput, 3).ToString());
+            
             Console.WriteLine("Throughput for Queue 2: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 2: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
@@ -202,25 +210,25 @@ namespace OS_Simulation_Project
             // write stats to file here
 
             // 3rd Queue
-            // RR q = 3
-            // RR q = 5
-            // RR q = 7
+            // RR q = 8
+            // RR q = 10
+            // RR q = 14
             // SRT
             ///////////////////////////////////////////////////////////////
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(3, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(8, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(5, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(10, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(7, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(14, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             // give SRT the Queue of procs that havent finished yet
             do
@@ -228,11 +236,35 @@ namespace OS_Simulation_Project
                 uniSim.Shortest_Remaining_Time(ref CPU_ready_Q, ref systemTime, ref COMPLETED_PROCS);
             } while (CPU_ready_Q.Count() != 0);
 
+            totalCPUTime = 0;
+            totalResponse = 0;
+            totalTurnaroundTime = 0;
+            totalWaitTime = 0;
+
+            for (int i = 0; i < COMPLETED_PROCS.Count(); i++)
+            {
+                // add all CPU burst times of all processes together...
+                totalCPUTime += COMPLETED_PROCS.ElementAt(i).Value.expectedCPUTime;
+                totalResponse += COMPLETED_PROCS.ElementAt(i).Value.response;
+                totalTurnaroundTime += COMPLETED_PROCS.ElementAt(i).Value.turnaround;
+                totalWaitTime += COMPLETED_PROCS.ElementAt(i).Value.wait;
+            }
+            
 
             throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
             // % time CPU was running (not including IO bursts)
             CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            averageWait = totalWaitTime / COMPLETED_PROCS.Count();
+            averageResponse = totalResponse / COMPLETED_PROCS.Count();
+            averageTurnaround = totalTurnaroundTime / COMPLETED_PROCS.Count();
+
+            FO.WriteTo(23, 2, Math.Round((decimal)averageResponse, 3).ToString());
+            FO.WriteTo(23, 3, Math.Round((decimal)averageTurnaround, 3).ToString());
+            FO.WriteTo(23, 4, Math.Round((decimal)averageWait, 3).ToString());
+            FO.WriteTo(23, 5, Math.Round((decimal)CPU_utilization, 3).ToString());
+            FO.WriteTo(23, 6, Math.Round((decimal)throughput, 3).ToString());
 
             Console.WriteLine("Throughput for Queue 3: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 3: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
@@ -263,19 +295,19 @@ namespace OS_Simulation_Project
             // write stats to file here
 
             // 4th Queue
-            // RR q = 2
-            // RR q = 6
+            // RR q = 9
+            // RR q = 15
             // SRT
             //////////////////////////////////////////////////////////////
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(2, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(9, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             for (int k = 0; k < CPU_ready_Q.Count(); k++)
             {
                 KeyValuePair<int, PCB> currProc = CPU_ready_Q.ElementAt(k);
-                uniSim.Round_Robin(6, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                uniSim.Round_Robin(15, currProc, ref systemTime, ref CPU_ready_Q, ref COMPLETED_PROCS);
             }
             // give SRT the Queue of procs that havent finished yet
             do
@@ -283,10 +315,34 @@ namespace OS_Simulation_Project
                 uniSim.Shortest_Remaining_Time(ref CPU_ready_Q, ref systemTime, ref COMPLETED_PROCS);
             } while (CPU_ready_Q.Count() != 0);
 
+            totalCPUTime = 0;
+            totalResponse= 0;
+            totalTurnaroundTime = 0;
+            totalWaitTime = 0;
+
+            for (int i = 0; i < COMPLETED_PROCS.Count(); i++)
+            {
+                // add all CPU burst times of all processes together...
+                totalCPUTime += COMPLETED_PROCS.ElementAt(i).Value.expectedCPUTime;
+                totalResponse += COMPLETED_PROCS.ElementAt(i).Value.response;
+                totalTurnaroundTime += COMPLETED_PROCS.ElementAt(i).Value.turnaround;
+                totalWaitTime += COMPLETED_PROCS.ElementAt(i).Value.wait;
+            }
+
             throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
             // % time CPU was running (not including IO bursts)
             CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            averageWait = totalWaitTime / COMPLETED_PROCS.Count();
+            averageResponse = totalResponse / COMPLETED_PROCS.Count();
+            averageTurnaround = totalTurnaroundTime / COMPLETED_PROCS.Count();
+
+            FO.WriteTo(24, 2, Math.Round((decimal)averageResponse, 3).ToString());
+            FO.WriteTo(24, 3, Math.Round((decimal)averageTurnaround, 3).ToString());
+            FO.WriteTo(24, 4, Math.Round((decimal)averageWait, 3).ToString());
+            FO.WriteTo(24, 5, Math.Round((decimal)CPU_utilization, 3).ToString());
+            FO.WriteTo(24, 6, Math.Round((decimal)throughput, 3).ToString());
 
             Console.WriteLine("Throughput for Queue 4: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 4: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");

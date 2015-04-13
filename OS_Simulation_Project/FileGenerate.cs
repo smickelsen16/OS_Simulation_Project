@@ -12,10 +12,10 @@ namespace OS_Simulation_Project
 
         public void Start()
         {
-            string[] lines = new string[200];
-            int[] arrivalTime = new int[200];
+            string[] lines = new string[500];
+            int[] arrivalTime = new int[500];
             int filesToGen;
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 500; i++)
             {
                 filesToGen = rand.Next(2, 10);
                 lines[i] = Generate(filesToGen, i, ref arrivalTime);
