@@ -21,3 +21,4 @@ C:\Users\smickelsen16\Desktop\OS_Simulation_Project\OS_Simulation_Project\bin\De
 C:\Users\smickelsen16\Desktop\OS_Simulation_Project\OS_Simulation_Project\obj\Debug\OS_Simulation_Project.csproj.ResolveComReference.cache
 C:\Users\smickelsen16\Desktop\OS_Simulation_Project\OS_Simulation_Project\obj\Debug\OS_Simulation_Project.exe
 C:\Users\smickelsen16\Desktop\OS_Simulation_Project\OS_Simulation_Project\obj\Debug\OS_Simulation_Project.pdb
+C:\Users\smickelsen16\Desktop\OS_Simulation_Project\OS_Simulation_Project\obj\Debug\OS_Simulation_Project.csprojResolveAssemblyReference.cache

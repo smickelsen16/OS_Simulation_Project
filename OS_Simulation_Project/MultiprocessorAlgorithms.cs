@@ -16,12 +16,14 @@ namespace OS_Simulation_Project
             UniprocessorAlgorithms u, int quantum, ref int time, int procNum)
         {
             int finishedCounterThing = CPU_ready_Q.Count();
-            Dictionary<int, PCB> crq = CPU_ready_Q;
-            SortedDictionary<int, PCB> cp = COMPLETED_PROCS;
-            int t = time;
-
+            Dictionary<int, PCB> crq;
+            SortedDictionary<int, PCB> cp;
+            int t;
             do
             {
+                crq = CPU_ready_Q;
+                cp = COMPLETED_PROCS;
+                t = time;
                 if (Processors.Count() < procNum)
                 {
                     Processors.Add(new Thread(() => u.Round_Robin(quantum, crq.First(), ref t, ref crq, ref cp)));
@@ -56,11 +58,14 @@ namespace OS_Simulation_Project
             UniprocessorAlgorithms u, ref int time, int procNum)
         {
             int finishedCounterThing = CPU_ready_Q.Count();
-            int t = time;
-            Dictionary<int, PCB> crq = CPU_ready_Q;
-            SortedDictionary<int, PCB> cp = COMPLETED_PROCS;
+            int t;
+            Dictionary<int, PCB> crq;
+            SortedDictionary<int, PCB> cp;
             do
             {
+                t = time;
+                crq = CPU_ready_Q;
+                cp = COMPLETED_PROCS;
                 if (Processors.Count() < procNum)
                 {
                     Processors.Add(new Thread(() => u.First_Come_First_Served(crq.First(), ref t, ref crq, ref cp)));

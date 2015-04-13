@@ -213,6 +213,7 @@ namespace OS_Simulation_Project
         public void Shortest_Remaining_Time(ref Dictionary<int, PCB> CPU_ready_Q, ref int time,
              ref SortedDictionary<int, PCB> COMPLETED_PROCS)
         {
+            KeyValuePair<int, PCB> currentProcPair = CPU_ready_Q.ElementAt(0);
             // set shortestProc to first process to start
             PCB shortestProc = CPU_ready_Q.ElementAt(0).Value;
             // loop through all processes to compare remainingTimes
@@ -221,8 +222,11 @@ namespace OS_Simulation_Project
                 if (shortestProc.remainingCPUTime != 0)
                 {
                     if (shortestProc.remainingCPUTime > CPU_ready_Q.ElementAt(i).Value.remainingCPUTime)
+                    {
                         // if a shorter process is found, reset the shortestProc
                         shortestProc = CPU_ready_Q.ElementAt(i).Value;
+                        currentProcPair = CPU_ready_Q.ElementAt(i);
+                    }
                 }
                 // if the remainingCPUTime is 0, then jump to the end and collect stats
                 else
@@ -247,13 +251,13 @@ namespace OS_Simulation_Project
                     // set burst to next burst
                     shortestProc.remainingCPUTime = shortestProc.CPU_bursts.First();
                     // run IO Algorithm 
-                    I_O_Algorithm(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc), ref time, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                    I_O_Algorithm(currentProcPair, ref time, ref CPU_ready_Q, ref COMPLETED_PROCS);
                 }
 
                 // CPU bursts are done but one IO burst remains
                 else if (shortestProc.CPU_bursts.Count() == 0 && shortestProc.IO_bursts.Count() != 0)
                     // run IO Algorithm with first element because there should only be one element at a time
-                    I_O_Algorithm(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc), ref time, ref CPU_ready_Q, ref COMPLETED_PROCS);
+                    I_O_Algorithm(currentProcPair, ref time, ref CPU_ready_Q, ref COMPLETED_PROCS);
 
 
                 // check to see if process is done
@@ -263,11 +267,11 @@ namespace OS_Simulation_Project
                     shortestProc.turnaround = time - shortestProc.arrivalTime;
                     //CPU wait is turnaround - expected service time
                     shortestProc.wait = shortestProc.turnaround - (shortestProc.expectedCPUTime + shortestProc.expectedIOTime);
-                    if (!COMPLETED_PROCS.ContainsKey(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc).Key))
+                    if (!COMPLETED_PROCS.ContainsKey(currentProcPair.Key))
                         // add to COMPLETED_PROCS to be output in main
-                        COMPLETED_PROCS.Add(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc).Key, CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc).Value);
+                        COMPLETED_PROCS.Add(currentProcPair.Key, currentProcPair.Value);
                     // remove from CPU_read_Q
-                    CPU_ready_Q.Remove(CPU_ready_Q.FirstOrDefault(x => x.Value == shortestProc).Key);
+                    CPU_ready_Q.Remove(currentProcPair.Key);
                 }
                 // context switch
                 time += 2;
