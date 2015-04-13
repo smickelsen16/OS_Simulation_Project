@@ -91,7 +91,6 @@ namespace OS_Simulation_Project
 				FO.WriteTo (2, i, COMPLETED_PROCS.ElementAt (i - 3).Value.arrivalTime.ToString());
 				FO.WriteTo (3, i, COMPLETED_PROCS.ElementAt (i - 3).Value.expectedCPUTime.ToString());
 				FO.WriteTo (4, i, COMPLETED_PROCS.ElementAt (i - 3).Value.expectedIOTime.ToString());
-				FO.WriteTo (1, i, (i - 3).ToString());
                 FO.WriteTo(6, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
 				FO.WriteTo (7, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
 				FO.WriteTo (8, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
