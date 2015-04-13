@@ -96,9 +96,31 @@ namespace OS_Simulation_Project
 				FO.WriteTo (7, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
 				FO.WriteTo (8, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
             }
-			FO.WriteTo(6, COMPLETED_PROCS.Count()+1, "Average Response time");
-			FO.WriteTo(7, COMPLETED_PROCS.Count()+1, "Average Turnaround time");
-			FO.WriteTo(8, COMPLETED_PROCS.Count()+1, "Average Wait time");
+
+			//writing to the end of the excel file where we will display the values below
+			FO.WriteTo(6, COMPLETED_PROCS.Count()+4, "Average Response time");
+			FO.WriteTo(7, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
+			FO.WriteTo(8, COMPLETED_PROCS.Count()+4, "Average Wait time");
+			FO.WriteTo(6, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
+			FO.WriteTo(7, COMPLETED_PROCS.Count()+6, "Throughput");
+
+			FO.WriteTo(9, COMPLETED_PROCS.Count()+4, "Average Response time");
+			FO.WriteTo(10, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
+			FO.WriteTo(11, COMPLETED_PROCS.Count()+4, "Average Wait time");
+			FO.WriteTo(9, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
+			FO.WriteTo(10, COMPLETED_PROCS.Count()+6, "Throughput");
+
+			FO.WriteTo(12, COMPLETED_PROCS.Count()+4, "Average Response time");
+			FO.WriteTo(13, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
+			FO.WriteTo(13, COMPLETED_PROCS.Count()+4, "Average Wait time");
+			FO.WriteTo(12, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
+			FO.WriteTo(13, COMPLETED_PROCS.Count()+6, "Throughput");
+
+			FO.WriteTo(15, COMPLETED_PROCS.Count()+4, "Average Response time");
+			FO.WriteTo(16, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
+			FO.WriteTo(17, COMPLETED_PROCS.Count()+4, "Average Wait time");
+			FO.WriteTo(15, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
+			FO.WriteTo(16, COMPLETED_PROCS.Count()+6, "Throughput");
 
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -153,6 +175,15 @@ namespace OS_Simulation_Project
             Console.WriteLine("Throughput for Queue 2: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 2: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
+			for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
+			{
+				//Writeto function writes to cells in excel file, it takes 3 parameters
+				//The first parameter is the row, second is column, and third is what youre writing
+				FO.WriteTo(9, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
+				FO.WriteTo (10, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
+				FO.WriteTo (11, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
+			}
+
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -205,6 +236,15 @@ namespace OS_Simulation_Project
             Console.WriteLine("Throughput for Queue 3: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 3: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
+			for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
+			{
+				//Writeto function writes to cells in excel file, it takes 3 parameters
+				//The first parameter is the row, second is column, and third is what youre writing
+				FO.WriteTo(12, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
+				FO.WriteTo (13, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
+				FO.WriteTo (4, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
+			}
+
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
@@ -249,6 +289,15 @@ namespace OS_Simulation_Project
 
             Console.WriteLine("Throughput for Queue 4: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 4: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+
+			for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
+			{
+				//Writeto function writes to cells in excel file, it takes 3 parameters
+				//The first parameter is the row, second is column, and third is what youre writing
+				FO.WriteTo(15, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
+				FO.WriteTo (16, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
+				FO.WriteTo (17, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
+			}
 
             //////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////
