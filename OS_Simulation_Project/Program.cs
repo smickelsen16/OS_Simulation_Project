@@ -30,6 +30,7 @@ namespace OS_Simulation_Project
 			FileOutput FO = new FileOutput();
 			FO.CreateFile();
 
+
             Dictionary<int, PCB> processTable = s.CreateProcessTable();
 
             UniprocessorAlgorithms uniSim = new UniprocessorAlgorithms();
@@ -80,7 +81,8 @@ namespace OS_Simulation_Project
             Console.WriteLine("Throughput for Queue 1: " + Math.Round((decimal)throughput, 5).ToString());
             Console.WriteLine("CPU Utilization for Queue 1: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
-            
+            // calculate average stats
+            // FO2.WriteTo(row, column, value(string));
             
             // write stats to file here
             for (int i = 3; i < COMPLETED_PROCS.Count() + 3; i++)
@@ -305,44 +307,44 @@ namespace OS_Simulation_Project
 
             /*RUN MULTIPROCESSOR SIMULATION HERE*/
 
-            processTable = s.CreateProcessTable();
-            for (int h = 0; h < processTable.Count(); h++)
-                CPU_ready_Q.Add(processTable.ElementAt(h).Key, processTable.ElementAt(h).Value);
-            COMPLETED_PROCS.Clear();
-            systemTime = 0;
-            
-            /*MULTIPROCESSOR WITH 4 PROCESSORS*/
-            mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 2, ref systemTime, 4);
-            mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 4, ref systemTime, 4);
-            mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 6, ref systemTime, 4);
-            mulSim.MultiProcFCFS(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, ref systemTime, 4);
+            //processTable = s.CreateProcessTable();
+            //for (int h = 0; h < processTable.Count(); h++)
+            //    CPU_ready_Q.Add(processTable.ElementAt(h).Key, processTable.ElementAt(h).Value);
+            //COMPLETED_PROCS.Clear();
+            //systemTime = 0;
 
-            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
+            ///*MULTIPROCESSOR WITH 4 PROCESSORS*/
+            //mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 2, ref systemTime, 4);
+            //mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 4, ref systemTime, 4);
+            //mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 6, ref systemTime, 4);
+            //mulSim.MultiProcFCFS(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, ref systemTime, 4);
 
-            // % time CPU was running (not including IO bursts)
-            CPU_utilization = (totalCPUTime / systemTime) * 100;
+            //throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for MultiProc 4 Proc: " + Math.Round((decimal)throughput, 5).ToString());
-            Console.WriteLine("CPU Utilization for MultiProc 4 Proc: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+            //// % time CPU was running (not including IO bursts)
+            //CPU_utilization = (totalCPUTime / systemTime) * 100;
 
-            processTable = s.CreateProcessTable();
-            for (int h = 0; h < processTable.Count(); h++)
-                CPU_ready_Q.Add(processTable.ElementAt(h).Key, processTable.ElementAt(h).Value);
-            COMPLETED_PROCS.Clear();
-            systemTime = 0;
+            //Console.WriteLine("Throughput for MultiProc 4 Proc: " + Math.Round((decimal)throughput, 5).ToString());
+            //Console.WriteLine("CPU Utilization for MultiProc 4 Proc: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
 
-            /*MULTIPROCESSOR WITH 8 PROCESSORS*/
-            mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 4, ref systemTime, 8);
-            mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 8, ref systemTime, 8);
-            mulSim.MultiProcFCFS(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, ref systemTime, 8);
+            //processTable = s.CreateProcessTable();
+            //for (int h = 0; h < processTable.Count(); h++)
+            //    CPU_ready_Q.Add(processTable.ElementAt(h).Key, processTable.ElementAt(h).Value);
+            //COMPLETED_PROCS.Clear();
+            //systemTime = 0;
 
-            throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
+            ///*MULTIPROCESSOR WITH 8 PROCESSORS*/
+            //mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 4, ref systemTime, 8);
+            //mulSim.MultiProcRoundRobin(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, 8, ref systemTime, 8);
+            //mulSim.MultiProcFCFS(ref CPU_ready_Q, ref COMPLETED_PROCS, uniSim, ref systemTime, 8);
 
-            // % time CPU was running (not including IO bursts)
-            CPU_utilization = (totalCPUTime / systemTime) * 100;
+            //throughput = (COMPLETED_PROCS.Count() / (double)systemTime);
 
-            Console.WriteLine("Throughput for MultiProc 8 Procs: " + Math.Round((decimal)throughput, 5).ToString());
-            Console.WriteLine("CPU Utilization for MultiProc 8 Procs: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
+            //// % time CPU was running (not including IO bursts)
+            //CPU_utilization = (totalCPUTime / systemTime) * 100;
+
+            //Console.WriteLine("Throughput for MultiProc 8 Procs: " + Math.Round((decimal)throughput, 5).ToString());
+            //Console.WriteLine("CPU Utilization for MultiProc 8 Procs: " + Math.Round((decimal)CPU_utilization, 5).ToString() + "%");
             
             FO.Finish();
 

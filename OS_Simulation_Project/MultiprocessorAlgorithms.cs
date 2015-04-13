@@ -15,6 +15,9 @@ namespace OS_Simulation_Project
         public void MultiProcRoundRobin(ref Dictionary<int, PCB> CPU_ready_Q, ref SortedDictionary<int, PCB> COMPLETED_PROCS,
             UniprocessorAlgorithms u, int quantum, ref int time, int procNum)
         {
+            UniprocessorAlgorithms uni = u;
+            int q = quantum;
+            int p = procNum;
             int finishedCounterThing = CPU_ready_Q.Count();
             Dictionary<int, PCB> crq;
             SortedDictionary<int, PCB> cp;
@@ -42,6 +45,7 @@ namespace OS_Simulation_Project
                                 {
                                     Processors.Insert(j, new Thread(() => u.Round_Robin(quantum, crq.First(), ref t, ref crq, ref cp)));
                                     Processors.ElementAt(j).Start();
+                                    MultiProcRoundRobin(ref crq, ref cp, uni, q, ref t, p);
                                 }
                                 executing = false;
                                 break;
