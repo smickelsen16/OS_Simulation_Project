@@ -81,11 +81,19 @@ namespace OS_Simulation_Project
             // write stats to file here
             for (int i = 3; i < COMPLETED_PROCS.Count(); i++)
             {
+				//Writeto function writes to cells in excel file, it takes 3 parameters
+				//The first parameter is the row, second is column, and third is what youre writing
 				FO.WriteTo (1, i, i - 3);
+				FO.WriteTo (2, i, COMPLETED_PROCS.Values.ElementAt (i - 3).arrivalTime.ToString ());
+				FO.WriteTo (3, i, COMPLETED_PROCS.Values.ElementAt (i - 3).expectedCPUTime.ToString ());
+				FO.WriteTo (4, i, COMPLETED_PROCS.Values.ElementAt (i - 3).expectedIOTime.ToString ());
                 FO.WriteTo(6, i, COMPLETED_PROCS.Values.ElementAt(i - 3).response.ToString());
+				FO.WriteTo (7, i, COMPLETED_PROCS.Values.ElementAt (i - 3).turnaround.ToString ());
+				FO.WriteTo (8, i, COMPLETED_PROCS.Values.ElementAt (i - 3).wait.ToString ());
             }
 			FO.WriteTo(6, COMPLETED_PROCS.Count()+1, "Average Response time");
-
+			FO.WriteTo(7, COMPLETED_PROCS.Count()+1, "Average Turnaround time");
+			FO.WriteTo(8, COMPLETED_PROCS.Count()+1, "Average Wait time");
 
             ////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////
