@@ -112,7 +112,7 @@ namespace OS_Simulation_Project
 
 			FO.WriteTo(12, COMPLETED_PROCS.Count()+4, "Average Response time");
 			FO.WriteTo(13, COMPLETED_PROCS.Count()+4, "Average Turnaround time");
-			FO.WriteTo(13, COMPLETED_PROCS.Count()+4, "Average Wait time");
+			FO.WriteTo(14, COMPLETED_PROCS.Count()+4, "Average Wait time");
 			FO.WriteTo(12, COMPLETED_PROCS.Count()+6, "Cpu Utilization");
 			FO.WriteTo(13, COMPLETED_PROCS.Count()+6, "Throughput");
 
@@ -242,7 +242,7 @@ namespace OS_Simulation_Project
 				//The first parameter is the row, second is column, and third is what youre writing
 				FO.WriteTo(12, i, COMPLETED_PROCS.ElementAt(i - 3).Value.response.ToString());
 				FO.WriteTo (13, i, COMPLETED_PROCS.ElementAt (i - 3).Value.turnaround.ToString ());
-				FO.WriteTo (4, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
+				FO.WriteTo (14, i, COMPLETED_PROCS.ElementAt (i - 3).Value.wait.ToString ());
 			}
 
             ////////////////////////////////////////////////////////////////
