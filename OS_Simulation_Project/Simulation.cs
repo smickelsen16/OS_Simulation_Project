@@ -20,7 +20,7 @@ namespace OS_Simulation_Project
 
             // reading all processes, line by line into array of strings
             //string[] processes = System.IO.File.ReadAllLines(@"C:\Users\Wesley\Desktop\Mytext.txt");
-            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\smickelsen16\Desktop\Output.txt");
+            string[] processes = System.IO.File.ReadAllLines(@"C:\Users\wesley\Desktop\Output.txt");
             //string[] processes = System.IO.File.ReadAllLines(@"C:\Users\James Bond\Desktop\Output.txt");
             
             // loop through the text file, separate line by line, then character by character and feed into the processTable Dictionary
